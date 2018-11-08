@@ -1,7 +1,3 @@
 <component name="CopyrightManager">
-  <settings>
-    <module2copyright>
-      <element module="copyright" copyright="stanwood" />
-    </module2copyright>
-  </settings>
+  <settings default="stanwood" />
 </component>
