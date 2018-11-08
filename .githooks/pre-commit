@@ -1,4 +1,7 @@
 # ktlint
+
+echo "Checking codestyle..."
+
 ./gradlew --continue ktlintCheck --daemon
 
 if [ $? -ne 0 ]; then exit 1; fi
