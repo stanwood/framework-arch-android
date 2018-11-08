@@ -5,6 +5,8 @@ It is based on Dagger 2.16 and provides all the necessary dependencies (except f
 
 ## Setup
 
+_In addition to the setup instructions outlined in the main README perform the following steps:_
+
 Set up kapt in your app module's _build.gradle_ like so:
 
 ```groovy
