@@ -62,7 +62,7 @@ class MainActivitySubModule {
         httpDataSource: HttpDataSource.BaseFactory
     ) = VideoPlayer(context, httpDataSource)
 
-}
+}```
 
 To actually inject stuff into your Activity set it up like this:
 
