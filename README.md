@@ -25,7 +25,7 @@ Then add this to you app's `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.github.stanwood.framework-arch-android:di:<insert latest version here>' // aar version available as well
+    implementation 'com.github.stanwood:framework-arch-android:<insert latest version here>' // aar version available as well
 }
 ```
 
