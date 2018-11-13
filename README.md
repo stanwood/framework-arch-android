@@ -34,6 +34,14 @@ dependencies {
 For usage please refer to the README's of the respective libraries. You can find them at the root of the library folders, e.g. _di/README
 .md_.
 
+Find general information below.
+
+## Packaging
+
+We package our classes as follows (WIP):
+
+![Packages](https://imgur.com/zsNOTeo.png)
+
 ## Contribute
 
 This project follows the [Android Kotlin Code Style](https://android.github.io/kotlin-guides/style.html)
