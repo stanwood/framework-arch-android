@@ -34,6 +34,8 @@ dependencies {
 For usage please refer to the README's of the respective libraries. You can find them at the root of the library folders, e.g. _di/README
 .md_.
 
+The sample app is located in a [separate repository](https://github.com/stanwood/architecture_sample_github_android) (private for now) to ensure that we package all changes properly and ready to use. We might merge both projects at a later stage.
+
 Find general information below.
 
 ## Packaging
