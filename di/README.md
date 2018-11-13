@@ -32,7 +32,7 @@ dependencies {
 
 The classes described below belong into packages as shown in the following screenshot:
 
-![Packages](https://i.imgur.com/TWNciZO.png)
+![Packages](https://imgur.com/zsNOTeo.png)
 
 ## For each Activity
 
