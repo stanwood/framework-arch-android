@@ -28,6 +28,12 @@ dependencies {
 }
 ```
 
+## Packages
+
+The classes described below belong into packages as shown in the following screenshot:
+
+![Packages](https://i.imgur.com/TWNciZO.png)
+
 ## For each Activity
 
 Create a module extending `ActivityModule` and add `@FragmentScope` Android injectors.
