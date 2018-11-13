@@ -132,6 +132,14 @@ class HomeFragment : Fragment(), HasSupportFragmentInjector {
 }
 ```
 
+## For each ViewModel
+
+There is not much to do for ViewModels except for adding a constructor annotated with `@Inject`:
+
+```kotlin
+class HomeViewModel @Inject constructor(/* inject properties here if you want */) : ViewModel() {}
+```
+
 ## What else do I need?
 
 Due to the nature of how libraries and dagger work we cannot provide all necessary classes to get DI up and running.
