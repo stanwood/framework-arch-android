@@ -21,8 +21,8 @@
 
 package io.stanwood.framework.arch.di.factory
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import dagger.Lazy
 import javax.inject.Inject
 
