@@ -42,7 +42,11 @@ Find general information below.
 
 We package our classes as follows (WIP):
 
-![Packages](https://imgur.com/zsNOTeo.png)
+![Packages](https://imgur.com/hG4HKNt.png)
+
+Generic (app-wide) components belong into the root folder packages while those for specific features are to be moved into the specific feature folders.
+
+_For example_: A `RecordingInteractor` in a video recording app is to be used by many different features and thus resides in the `interactor` package. A `RecordingListInteractor` would just be used within the `recordinglist` feature and thus resides in `feature.recordinglist.interactor`. The models the interactor passes to the outside and accepts should be stored in a `model` subpackage of the respective `interactor` package.
 
 ## Contribute
 
