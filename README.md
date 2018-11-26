@@ -42,7 +42,7 @@ Find general information below.
 
 We package our classes as follows (WIP):
 
-![Packages](https://imgur.com/hG4HKNt.png)
+![Packages](https://imgur.com/PVvcczQ.png)
 
 Generic (app-wide) components belong into the root folder packages while those for specific features are to be moved into the specific feature folders.
 
