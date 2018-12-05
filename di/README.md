@@ -132,7 +132,6 @@ class HomeFragment : Fragment(), HasSupportFragmentInjector {
 There is not much to do for ViewModels except for adding a constructor annotated with `@Inject`:
 
 ```kotlin
-@FragmentScope
 class HomeViewModel @Inject constructor(/* inject properties here if you want */) : ViewModel() {}
 ```
 
