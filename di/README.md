@@ -99,12 +99,7 @@ The actual provides are declared in the sub-module:
 @Module
 class HomeFragmentSubModule {
 
-    @Provides
-    @FragmentScope
-    internal fun provideViewModel(
-        homeInteractor: HomeInteractor,
-        settingsInteractor: SettingsInteractor
-    ) = HomeViewModel(homeInteractor, settingsInteractor)
+    // provide @FragmentScope annotated dependencies here
 
 }
 ```
@@ -137,8 +132,15 @@ class HomeFragment : Fragment(), HasSupportFragmentInjector {
 There is not much to do for ViewModels except for adding a constructor annotated with `@Inject`:
 
 ```kotlin
+@FragmentScope
 class HomeViewModel @Inject constructor(/* inject properties here if you want */) : ViewModel() {}
 ```
+
+## For each Interactor/Repository
+
+Interactors and repositories are usually also provided right the same like ViewModels and scoped as `Singleton` or `FragmentScope`/`ActivityScope`.
+
+Using modules is rarely needed to provide them.
 
 ## What else do I need?
 
