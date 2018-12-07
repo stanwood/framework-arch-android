@@ -117,12 +117,12 @@ class HomeFragment : Fragment(), HasSupportFragmentInjector {
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<HomeViewModel> // optional if you use Android ViewModels
 
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel
+        get() = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel::class.java)
     }
 }
 ```

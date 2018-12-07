@@ -48,6 +48,38 @@ Generic (app-wide) components belong into the root folder packages while those f
 
 _For example_: A `RecordingInteractor` in a video recording app is to be used by many different features and thus resides in the `interactor` package. A `RecordingListInteractor` would just be used within the `recordinglist` feature and thus resides in `feature.recordinglist.interactor`. The models the interactor passes to the outside and accepts should be stored in a `model` subpackage of the respective `interactor` package.
 
+## ViewModels
+
+ViewModels are the glue between data layer and UI. At stanwood we use Android ViewModels as base class.
+
+We use RxJava to transport data to the ViewModel and LiveData for communication between ViewModel and Fragment and UI (XML by means of data
+binding).
+
+A typical ViewModel looks like this (dependencies are usually injected via dagger, refer to the `di` library for details):
+
+```kotlin
+class HomeViewModel @Inject constructor(
+    homeInteractor: HomeInteractor // usually we have at least one interactor to for fetching data
+) : ViewModel() { // Android ViewModel
+
+    val text by lazy {
+        homeInteractor.getData()
+            .toFlowable()
+            .map {
+                it.description
+            }
+            .observeOn(AndroidSchedulers.mainThread()) // from io.reactivex.rxjava2:rxandroid
+            .toLiveData() // from androidx.lifecycle:lifecycle-reactivestreams-ktx
+    }
+
+}
+```
+
+A planned sub-library will provide all the necessary dependencies.
+
+For details on how to get hold of the ViewModel in your fragment check out the `di` Fragment documentation.
+
+
 ## Contribute
 
 This project follows the [Android Kotlin Code Style](https://android.github.io/kotlin-guides/style.html)
