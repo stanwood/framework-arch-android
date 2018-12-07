@@ -48,7 +48,7 @@ Generic (app-wide) components belong into the root folder packages while those f
 
 _For example_: A `RecordingInteractor` in a video recording app is to be used by many different features and thus resides in the `interactor` package. A `RecordingListInteractor` would just be used within the `recordinglist` feature and thus resides in `feature.recordinglist.interactor`. The models the interactor passes to the outside and accepts should be stored in a `model` subpackage of the respective `interactor` package.
 
-## ViewModels
+## ViewModels and Refreshing/Resetting
 
 ViewModels are the glue between data layer and UI. At stanwood we use Android ViewModels as base class.
 
@@ -62,12 +62,28 @@ class HomeViewModel @Inject constructor(
     homeInteractor: HomeInteractor // usually we have at least one interactor to for fetching data
 ) : ViewModel() { // Android ViewModel
 
+    // handling for manual reload
+    private val _reload = MutableLiveData<Unit?>()
+
+    val reload: LiveData<Unit?>
+        get() = _reload
+
+    fun reload(view: View) {
+        _reload.value = null
+    }
+
+    // data loading as soon as the ViewModel is bound (e.g. `android:text="@{vm.text)"` in XML)
     val text by lazy {
-        homeInteractor.getData()
+        homeInteractor.getData(refresh = true) // usually we have something like nytimes/store or similar to handle caching on data layer
             .toFlowable()
             .map {
                 it.description
             }
+            /*
+            We need to cache here as every time the LiveData becomes active it will subscribe to the RX Observable.
+            Check out the cache() operator documentation for thoughts on memory handling.
+            */
+            .cache()
             .observeOn(AndroidSchedulers.mainThread()) // from io.reactivex.rxjava2:rxandroid
             .toLiveData() // from androidx.lifecycle:lifecycle-reactivestreams-ktx
     }
@@ -77,8 +93,52 @@ class HomeViewModel @Inject constructor(
 
 A planned sub-library will provide all the necessary dependencies.
 
-For details on how to get hold of the ViewModel in your fragment check out the `di` Fragment documentation.
+The Fragment usually retrieves the ViewModel via DI and supplies it to the Layout via data binding:
 
+```kotlin
+@Inject
+internal lateinit var viewModelFactory: ViewModelFactory<RepositoryListViewModel>
+
+// For more details on how to get hold of the ViewModel in your fragment check out the `di` Fragment documentation.
+private val viewModel: RepositoryListViewModel
+    get() = ViewModelProviders.of(this, viewModelFactory).get(RepositoryListViewModel::class.java)
+
+private var binding: FragmentHomeBinding? = null
+
+override fun onCreate(savedInstanceState: Bundle?) {
+    AndroidSupportInjection.inject(this)
+    super.onCreate(savedInstanceState)
+}
+
+override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+): View = FragmentHomeBinding.inflate(inflater, container, false).apply {
+    setLifecycleOwner(this@HomeFragment)
+    setViewModel()
+    binding = this
+}.root
+
+private fun FragmentRepositoryListBinding.setViewModel() {
+    vm = viewModel.apply {
+        reload.observe(this@RepositoryListFragment, Observer {
+            // request a new ViewModel if the user wants to refresh
+            viewModelStore.clear()
+            setViewModel()
+            executePendingBindings()
+        })
+    }
+}
+```
+
+The clear/refresh handling you see above can be super useful if the user wants to hard-refresh the UI.
+
+By using the supplied ViewModelFactory and the load-on-(data)-binding-pattern in combination with Android Architecture Components'
+`ViewModelProviders` you will get proper behavior for orientation change (no data reload) and restore (data reload, in the best case just
+from a cache in the data layer) while not loosing the ability for user triggered refresh in a very simple and straightforward.
+
+Resetting the view is equally simple by just requesting a fresh ViewModel.
 
 ## Contribute
 
