@@ -62,10 +62,8 @@ object ResourceTransformer {
                 .onErrorReturn { createFailed(it) }
     }
 
-
     private fun <T, R> createSuccess(transform: (T) -> R, source: T) =
         Resource.Success(transform.invoke(source)) as (Resource<R>)
 
     private fun <R> createFailed(throwable: Throwable) = Resource.Failed<R>(throwable) as Resource<R>
-
 }
