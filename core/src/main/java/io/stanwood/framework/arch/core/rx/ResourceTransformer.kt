@@ -43,7 +43,7 @@ object ResourceTransformer {
         SingleResourceTransformer(transform, resumeInCaseOfError)
 
     private class ObservableResourceTransformer<T, R>(
-        private val transform: (T) -> R,
+        private inline val transform: (T) -> R,
         private inline val resumeInCaseOfError: ((Throwable) -> Observable<T>)? = null
     ) : ObservableTransformer<T, Resource<R>> {
         override fun apply(upstream: Observable<T>): ObservableSource<Resource<R>> =
