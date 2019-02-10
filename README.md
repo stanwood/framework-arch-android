@@ -3,12 +3,11 @@
 
 # stanwood Architecture Utilities (Android)
 
-A set of libraries containing homegrown architecture related utility classes.
+A set of libraries containing homegrown architecture related utility classes as well as stanwood's general architecture guidelines.
 
 ## Import
 
-The stanwood Architecture Utilities are hosted on JitPack. Therefore you can simply
-import them by adding
+The stanwood Architecture Utilities are hosted on JitPack. Therefore you can simply import them by adding
 
 ```groovy
 allprojects {
@@ -25,120 +24,208 @@ Then add this to you app's `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.github.stanwood:framework-arch-android:<insert latest version here>' // aar version available as well
+    implementation 'com.github.stanwood.framework-arch-android:<module>:<insert latest version here>' // aar versions available as well
 }
 ```
 
 ## Usage
 
-For usage please refer to the README's of the respective libraries. You can find them at the root of the library folders, e.g. _di/README
-.md_.
+In general we recommend usage of the [stanwood Android templates](https://plugins.jetbrains.com/plugin/11954-stanwood-android-templates) IntelliJ plugin. It provides easy to use templates for all the concepts described below and more. Install the plugin and find the templates in the `New...` context menu in the `stanwood` folder.
+
+The templates include comments and TODOs. Fix all TODOs and you should have a nicely running app in no time.
+
+The plugin adds the libraries in this repository to your dependencies for you when needed.
+
+For detailed usage of the various libraries in this repository please refer to the README's of the respective libraries. You can find them at the root of the library folders, e.g. _di/README.md_.
+
+**TODO: update library READMEs*
 
 The sample app is located in a [separate repository](https://github.com/stanwood/architecture_sample_github_android) (private for now) to ensure that we package all changes properly and ready to use. We might merge both projects at a later stage.
 
-Find general information below.
+## Kotlin
+
+All our apps are written in Kotlin and that's what the IntelliJ plugin and the libraries target. We don't offer any official Java support although many classes in the libraries might work just fine when using in combination with Java as well.
+
+## Dependencies
+
+The libraries contain a number of dependencies on third party libraries we use in all our apps. There is nothing out of the ordinary to find here. In general we recommend to stick with the versions provided by this library and not override them in your app. We will make sure to keep those dependencies updated within a reasonable timeframe and after having tested them with the components provided in this library.
+
+The main third party libraries we use in our architecture aside of Google's usual Android libraries are (in no special order):
+
+- [Google/Dagger](https://github.com/google/dagger) (specifically the Android flavour) for DI
+- [ReactiveX/RxJava](https://github.com/ReactiveX/RxJava) for handling data streams
+- [NYTimes/Store](https://github.com/NYTimes/Store) and its Kotlin/Android specific flavours for simple network data retrieval and offline persistence
+- [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/) for data loading, data streaming within the View layer, navigation and general persistence
+
+## Libraries
+
+This repository offers the following libraries:
+
+### core
+The core library contains the most important basic components of our architecture such as `ViewModel` (don't confuse it with Google's `ViewModel`!), `ViewDataProvider`, `Resource` as well as some RxJava 2 helper classes. All other libraries depend on this library so that you rarely need to pull this in manually.
+
+### di
+This library provides a set of dagger compatible factories for `ViewModel`s and `ViewDataProvider`s as well as Android specific scopes and modules.
+
+### nav
+The nav library provides helper classes for simplified navigation handling. This is mainly used by the IntelliJ plugin.
 
 ## Packaging
 
 We package our classes as follows (WIP):
 
+**TODO: Update screenshot**
+
 ![Packages](https://imgur.com/PVvcczQ.png)
 
 Generic (app-wide) components belong into the root folder packages while those for specific features are to be moved into the specific feature folders.
 
-_For example_: A `RecordingInteractor` in a video recording app is to be used by many different features and thus resides in the `interactor` package. A `RecordingListInteractor` would just be used within the `recordinglist` feature and thus resides in `feature.recordinglist.interactor`. The models the interactor passes to the outside and accepts should be stored in a `model` subpackage of the respective `interactor` package.
+Interactors and repositories are *always* located in the *repository*/*interactor* package in the app root package.
 
-## ViewModels and Refreshing/Resetting
+## General architecture
 
-ViewModels are the glue between data layer and UI. At stanwood we use Android ViewModels as base class.
+![Architecture](https://i.imgur.com/PhMI1XZ.jpg)
 
-We use RxJava to transport data to the ViewModel and LiveData for communication between ViewModel and Fragment and UI (XML by means of data
-binding).
+The overall architecture consists of three layers:
 
-A typical ViewModel looks like this (dependencies are usually injected via dagger, refer to the `di` library for details):
+1. **Data layer**: where the data is fetched from some source (i.e. network, database, file system). This is where the *Repository* classes reside
+2. **Domain layer**: where data from the data layer is brought into a form suitable for the app - this is mainly done by single-purpose *Interactors* which often fetch data from multiple Repositories
+3. **View layer**: where domain data is presented to the user (after optional conversion by means of the ViewModel), here we find *ViewDataProvider*s, *ViewModel*s and our usual Android suspects like Fragments and Activities.
+
+Most dependencies are resolved by means of the dagger DI framework (don't worry, the plugin generates most of the modules and components for you). Usually data flows by means of RxJava 2 streams between the layers.
+
+### Data layer
+
+The data layer is the central source for data not originating from within the app. It is our interface to the outside world.
+
+Repositories are the main components of the data layer. They take care of fetching and sending data from/to outside data sources.
+
+As the data layer is the bottom-most layer repositories don't know anything about the layers above. They are usually contacted directly by Interactors from the domain layers.
+
+Instead of sending raw source data to the interactors, Repositories *map* data to *Domain Objects*. This helps at abstracting the actual sources from the rest of the app and allows for relatively simple replacements or changes of sources.
+
+They also take care of transparently persisting data, e.g. for offline cases. In case of network sources we use the Store library for that. The network data itself is fetched via retrofit.
+
+When a DB is needed we prefer *Room* for its reactive interface which integrates very well in our reactive way of coding.
+
+A simple repository implementation might look like this (the IntelliJ plugin will aid you in creating similar classes within seconds):
 
 ```kotlin
-class HomeViewModel @Inject constructor(
-    homeInteractor: HomeInteractor // usually we have at least one interactor to for fetching data
-) : ViewModel() { // Android ViewModel
-
-    // handling for manual reload
-    private val _reload = MutableLiveData<Unit?>()
-
-    val reload: LiveData<Unit?>
-        get() = _reload
-
-    fun reload(view: View) {
-        _reload.value = null
+class SampleRepository @Inject constructor(private val api: SampleApi, fileSystem: FileSystem) {
+    private val sourcePersister = SourcePersisterFactory.create(fileSystem, 60, TimeUnit.MINUTES)
+    private val memoryPolicy =
+        MemoryPolicy.builder().setExpireAfterWrite(30).setExpireAfterTimeUnit(TimeUnit.MINUTES)
+            .build()
+    private val sampleStore by lazy {
+        SerializationSourceParser(RestApiSampleData.serializer().list)
+            .withFetcher(Fetcher { api.getSampleData() }) // getSampleData() returns a BufferedSource
+            .open()
     }
 
-    // data loading as soon as the ViewModel is bound (e.g. `android:text="@{vm.text)"` in XML)
-    val text by lazy {
-        homeInteractor.getData(refresh = true) // usually we have something like nytimes/store or similar to handle caching on data layer
-            .toFlowable()
-            .map {
-                it.description
+    fun refreshSampleData() {
+        sampleStore.clear(BarCode("type", "all"))
+    }
+
+    fun fetchSampleData(): Observable<Resource<List<SampleData>>> =
+        sampleStore.getRefreshing(BarCode("type", "all"))
+            .compose(ResourceTransformer.fromObservable({ src -> src.map { it.mapToDomain() } }))
+
+
+    private fun <T> SerializationSourceParser<T>.withFetcher(fetcher: Fetcher<BufferedSource, BarCode>) =
+        StoreBuilder.parsedWithKey<BarCode, BufferedSource, T>()
+            .fetcher(fetcher)
+            .persister(sourcePersister)
+            .refreshOnStale()
+            .memoryPolicy(memoryPolicy)
+            .parser(this)
+}
+```
+
+## Domain Layer
+
+The domain layer is where our business rules are defined - usually in the form of Interactors.
+
+Interactors usually fetch data from multiple Repositories, merge that data and return it as more complex Domain Models. Often they also implement business rules like: "only return data here when the user is logged in, otherwise throw an error" or "only enable the feature when the user has completed an IAP".
+
+Even if an Interactor just fetches data straight from one Repository don't feel tempted to skip implementation of that Interactor and directly access the repository from the above View layer. You will loose the benefit of having all business rules defined in an encapsulated way.
+
+Interactors are usually quite tightly scoped and thus very reusable. It is not uncommon for ViewDataProviders to access multiple interactors to get the data needed by its ViewModel.
+
+** TODO provide sample implementation**
+
+## View layer
+
+The View layer is the topmost layer in our Architecture. As such it is the user facing layer. The View layer is where most of our features are sitting.
+
+The interface between the View layer and the Domain layer is defined by ViewDataProviders.
+
+ViewDataProviders are regular Android ViewModels. As such they remain in place even across configuration changes. However, their sole purpose is to fetch (and possibly post) data, not to handle any UI logic.
+
+This is done by the ViewModel (again, not the Android ViewModel!) in collaboration with the Fragment.
+
+Every ViewModel has access to a ViewDataProvider. The ViewModel subscribes to an Observable supplied by the ViewDataProvider to receive data from the lower layers.
+
+The ViewDataProvider is also where you would implement refresh handling and where data from multiple Interactors is merged. Thus the ViewDataProvider decides *which streams are provided to the ViewModel depending on what the ViewModel asks for*.
+
+A simple ViewDataProvider might look like this:
+
+```kotlin
+class SampleDataProviderImpl @Inject constructor(val sampleRepository: SampleInteractor) : ViewDataProvider(), SampleDataProvider {
+
+    private var disposable: CompositeDisposable = CompositeDisposable()
+
+    private val retrySubject = PublishSubject.create<Unit>()
+
+    override val data =
+        retrySubject
+            .startWith(Unit)
+            .switchMap {
+                sampleRepository.fetchSampleData()
+                    .toObservable()
             }
-            /*
-            We need to cache here as every time the LiveData becomes active it will subscribe to the RX Observable.
-            Check out the cache() operator documentation for thoughts on memory handling.
-            */
-            .cache()
-            .observeOn(AndroidSchedulers.mainThread()) // from io.reactivex.rxjava2:rxandroid
-            .toLiveData() // from androidx.lifecycle:lifecycle-reactivestreams-ktx
+            .replay(1)
+            .autoConnect(1) {
+                disposable += it
+            }
+
+    override fun retry() {
+        retrySubject.onNext(Unit)
     }
 
-}
-```
-
-A planned sub-library will provide all the necessary dependencies.
-
-The Fragment usually retrieves the ViewModel via DI and supplies it to the Layout via data binding:
-
-```kotlin
-@Inject
-internal lateinit var viewModelFactory: ViewModelFactory<RepositoryListViewModel>
-
-// For more details on how to get hold of the ViewModel in your fragment check out the `di` Fragment documentation.
-private val viewModel: RepositoryListViewModel
-    get() = ViewModelProviders.of(this, viewModelFactory).get(RepositoryListViewModel::class.java)
-
-private var binding: FragmentHomeBinding? = null
-
-override fun onCreate(savedInstanceState: Bundle?) {
-    AndroidSupportInjection.inject(this)
-    super.onCreate(savedInstanceState)
-}
-
-override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-): View = FragmentHomeBinding.inflate(inflater, container, false).apply {
-    setLifecycleOwner(this@HomeFragment)
-    setViewModel()
-    binding = this
-}.root
-
-private fun FragmentRepositoryListBinding.setViewModel() {
-    vm = viewModel.apply {
-        reload.observe(this@RepositoryListFragment, Observer {
-            // request a new ViewModel if the user wants to refresh
-            viewModelStore.clear()
-            setViewModel()
-            executePendingBindings()
-        })
+    override fun onCleared() {
+        super.onCleared()
+        disposable.dispose()
     }
 }
 ```
 
-The clear/refresh handling you see above can be super useful if the user wants to hard-refresh the UI.
+Again the plugin will aid you in defining the necessary interfaces and the class itself.
 
-By using the supplied ViewModelFactory and the load-on-(data)-binding-pattern in combination with Android Architecture Components'
-`ViewModelProviders` you will get proper behavior for orientation change (no data reload) and restore (data reload, in the best case just
-from a cache in the data layer) while not loosing the ability for user triggered refresh in a very simple and straightforward.
+When the ViewModel receives data from the ViewDataProvider it may map it again to data objects suitable for whatever UI the data shall be presented in (e.g. by applying filters). The mapped objects can in turn be ViewModels (e.g. when presenting data in a RecyclerView, we usually suffix those with _Item_) or just data classes. In both cases data is bound to the UI by means of `android.databinding.Observable*` properties. 
 
-Resetting the view is equally simple by just requesting a fresh ViewModel.
+For better performance and control of what happens we usually avoid having our ViewModels implement `BaseObservable`, better use the `notifyPropertyChanged()` methods to inform the UI of changes.
+
+It is also fine to use `LiveData` to forward data to the UI, but keep in mind that this also leads to less control over what happens when.
+
+*Contrary to the Android ViewModel, our ViewModel can easily have access to the Fragment or Activity context, just inject it and don't worry about leaks.*
+
+**TODO: add sample ViewModel**
+
+The last part of the chain is the Fragment that injects the ViewModel. This is likely the most boring part.
+
+The Fragment subscribes to the data stream provided by the ViewModel (usually in `onCreate()`). If the Fragment hosts a RecyclerView it might then forward the data to the Adapter once it arrives.
+
+** TODO: add sample Fragment**
+
+## A word on `Resource`s
+
+The Resource class is a sealed class wrapping objects returned by asynchronous operations (usually in streams). We use it from the Data layer all the way up to the View layer, so make sure to always wrap your data objects in Resources when modifying stream data. Various transformers the core library will help you with that.
+
+A Resource can have three states: Success, Failed and Loading. Depending on the state the Resource will contain the data itself (Success), a Throwable and optionally data (Failed, the data might originate from merged sources) or no data (Loading).
+
+The sealed class concept will help you to easily react to state changes in any given layer.
+
+**TODO: add Resource listening sample**
 
 ## Contribute
 

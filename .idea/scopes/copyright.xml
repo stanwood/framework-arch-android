@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="copyright" pattern="file[di]:src/main/java//*||file[di]:src/main/AndroidManifest.xml||file[di]:src/main/res//*||file[framework-arch-android]:.githooks//*||file[framework-arch-android]:.editorconfig||file[di]:build.gradle||file[framework-arch-android]:build.gradle" />
-</component>

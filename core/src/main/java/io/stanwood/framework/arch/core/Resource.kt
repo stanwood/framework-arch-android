@@ -26,4 +26,3 @@ sealed class Resource<out T> {
     data class Failed<out T>(val e: Throwable, val data: T? = null) : Resource<T>()
     class Loading<out T> : Resource<T>()
 }
-//arch->core
