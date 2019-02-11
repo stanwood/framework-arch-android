@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 stanwood GmbH
+ * Copyright (c) 2019 stanwood GmbH
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,17 +19,16 @@
  * SOFTWARE.
  */
 
-package io.stanwood.framework.arch.di.module
+package io.stanwood.framework.arch.nav
 
-import androidx.fragment.app.Fragment
-import dagger.Binds
-import dagger.Module
-import io.stanwood.framework.arch.di.scope.FragmentScope
+import androidx.annotation.DrawableRes
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentManager
+import androidx.navigation.findNavController
 
-@Module
-abstract class FragmentModule<T : Fragment> {
-
-    @Binds
-    @FragmentScope
-    protected abstract fun provideFragment(t: T): Fragment
+fun Toolbar.addNavigateUp(fm: FragmentManager, @DrawableRes drawable: Int = R.drawable.ic_arrow_back_white_24dp) {
+    if (fm.backStackEntryCount > 0) {
+        navigationIcon = resources.getDrawable(drawable)
+        setNavigationOnClickListener { findNavController().navigateUp() }
+    }
 }

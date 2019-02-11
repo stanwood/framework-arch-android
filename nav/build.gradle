@@ -51,6 +51,7 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
     api 'android.arch.navigation:navigation-fragment-ktx:1.0.0-beta01'
     api 'android.arch.navigation:navigation-ui-ktx:1.0.0-beta01'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
