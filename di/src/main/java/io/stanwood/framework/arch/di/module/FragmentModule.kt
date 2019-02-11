@@ -21,7 +21,7 @@
 
 package io.stanwood.framework.arch.di.module
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import dagger.Binds
 import dagger.Module
 import io.stanwood.framework.arch.di.scope.FragmentScope
