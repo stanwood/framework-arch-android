@@ -80,7 +80,7 @@ We package our classes as follows (WIP):
 
 Generic (app-wide) components belong into the root folder packages while those for specific features are to be moved into the specific feature folders.
 
-Interactors and repositories are *always* located in the *repository*/*interactor* package in the app root package.
+Interactors are *always* located in the *interactor* package in the app root package. Similarly Repositories are *always* located in the *repositories* package. You never find any of those within a feature package.
 
 ## General architecture
 

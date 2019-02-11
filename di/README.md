@@ -2,11 +2,11 @@
 
 This library provides scopes, modules and factories for easy integration of dagger into your Android project.
 
-The stanwood Android plugin takes care of most of this for you, so follow the steps below only in case you are manually upgrading an existing project or want to more closely know what happens behind the curtains.
+*Note: The stanwood Android plugin takes care of most of this for you, so follow the steps below only in case you are manually upgrading an existing project or want to more closely know what happens behind the curtains.*
 
-Our DI concept is based on dagger 2.21 and provides all the necessary dependencies (except for kapt dependencies which you need to include manually).
+Our DI concept is based on dagger 2.21 and provides all the necessary dependencies (except for `kapt` dependencies which you need to declare manually when not using the plugin).
 
-Note, that the following might not always be up-par with what the plugin generates, but we try to keep it updated as good as we can.
+Note, that the following description might not always be up-par with what the plugin generates, but we try to keep it updated as good as we can.
 
 ## Setup
 
