@@ -1,4 +1,4 @@
-package io.stanwood.mhwdb.feature.armor.ui
+package io.stanwood.mhwdb.feature.armors.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import io.stanwood.framework.databinding.recyclerview.BindingViewHolder
 import io.stanwood.mhwdb.BR
 import io.stanwood.mhwdb.databinding.LayoutArmorDetailsItemBinding
-import io.stanwood.mhwdb.feature.armor.vm.ArmorDetailsItemViewModel
+import io.stanwood.mhwdb.feature.armors.vm.ArmorDetailsItemViewModel
 
 class ArmorDetailsAdapter(
     private val inflater: LayoutInflater,

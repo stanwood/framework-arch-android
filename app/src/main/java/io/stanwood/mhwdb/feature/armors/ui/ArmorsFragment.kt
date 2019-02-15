@@ -1,4 +1,4 @@
-package io.stanwood.mhwdb.feature.armor.ui
+package io.stanwood.mhwdb.feature.armors.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,14 +15,14 @@ import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
 import io.stanwood.mhwdb.R
 import io.stanwood.mhwdb.databinding.FragmentArmorBinding
-import io.stanwood.mhwdb.feature.armor.vm.ArmorListViewModel
+import io.stanwood.mhwdb.feature.armors.vm.ArmorsViewModel
 import javax.inject.Inject
 
-class ArmorListFragment : Fragment(), HasSupportFragmentInjector {
+class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
-    internal lateinit var viewModelFactory: ViewModelFactory<ArmorListViewModel>
-    private var viewModel: ArmorListViewModel? = null
+    internal lateinit var viewModelFactory: ViewModelFactory<ArmorsViewModel>
+    private var viewModel: ArmorsViewModel? = null
     @Inject
     internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
     @Inject
@@ -30,14 +30,14 @@ class ArmorListFragment : Fragment(), HasSupportFragmentInjector {
     @Inject
     internal lateinit var mainNavController: NavController
     private var binding: FragmentArmorBinding? = null
-    private var rcvAdapter: ArmorListAdapter? = null
+    private var rcvAdapter: ArmorsAdapter? = null
 
     override fun supportFragmentInjector() = androidInjector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
-        viewModel = viewModelFactory.create(ArmorListViewModel::class.java)
+        viewModel = viewModelFactory.create(ArmorsViewModel::class.java)
             .apply {
                 savedInstanceState?.getLongArray(KEY_EXPANDED_SETS)?.apply {
                     expandedSets.addAll(this.asList())
@@ -61,7 +61,7 @@ class ArmorListFragment : Fragment(), HasSupportFragmentInjector {
             }
             lifecycleOwner = viewLifecycleOwner
         }
-        rcvAdapter = ArmorListAdapter(LayoutInflater.from(context), dataBindingComponent) { viewModel?.itemClicked(it) }
+        rcvAdapter = ArmorsAdapter(LayoutInflater.from(context), dataBindingComponent) { viewModel?.itemClicked(it) }
         viewModel?.apply {
             items.subscribeBy(viewLifecycleOwner, onNext = {
                 binding?.rcv?.apply {

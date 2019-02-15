@@ -1,4 +1,4 @@
-package io.stanwood.mhwdb.feature.armor.ui
+package io.stanwood.mhwdb.feature.armors.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +14,7 @@ import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
 import io.stanwood.framework.arch.nav.addNavigateUp
 import io.stanwood.mhwdb.databinding.FragmentArmorDetailsBinding
-import io.stanwood.mhwdb.feature.armor.vm.ArmorDetailsViewModel
+import io.stanwood.mhwdb.feature.armors.vm.ArmorDetailsViewModel
 import javax.inject.Inject
 
 class ArmorDetailsFragment : Fragment(), HasSupportFragmentInjector {

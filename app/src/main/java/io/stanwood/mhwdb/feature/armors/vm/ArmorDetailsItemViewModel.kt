@@ -1,3 +1,3 @@
-package io.stanwood.mhwdb.feature.armor.vm
+package io.stanwood.mhwdb.feature.armors.vm
 
 class ArmorDetailsItemViewModel(val title: String)

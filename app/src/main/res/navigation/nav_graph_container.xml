@@ -15,6 +15,6 @@
     <action android:id="@+id/showArmor" app:destination="@id/armorFragment" app:popUpTo="@id/nav_graph_container" app:popUpToInclusive="true"/>
     <fragment
         android:id="@+id/armorFragment"
-        android:name="io.stanwood.mhwdb.feature.armor.ui.ArmorListFragment" />
+        android:name="io.stanwood.mhwdb.feature.armors.ui.ArmorsFragment" />
 
 </navigation>

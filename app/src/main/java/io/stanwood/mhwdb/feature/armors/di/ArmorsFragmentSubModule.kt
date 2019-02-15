@@ -1,21 +1,21 @@
-package io.stanwood.mhwdb.feature.armor.di
+package io.stanwood.mhwdb.feature.armors.di
 
 import androidx.databinding.DataBindingComponent
 import androidx.lifecycle.ViewModelProviders
 import dagger.Module
 import dagger.Provides
 import io.stanwood.framework.arch.di.factory.ViewDataProviderFactory
-import io.stanwood.mhwdb.feature.armor.dataprovider.ArmorDetailsDataProvider
-import io.stanwood.mhwdb.feature.armor.dataprovider.ArmorDetailsDataProviderImpl
-import io.stanwood.mhwdb.feature.armor.ui.ArmorDetailsFragment
+import io.stanwood.mhwdb.feature.armors.dataprovider.ArmorDataProvider
+import io.stanwood.mhwdb.feature.armors.dataprovider.ArmorDataProviderImpl
+import io.stanwood.mhwdb.feature.armors.ui.ArmorsFragment
 import io.stanwood.mhwdb.glide.GlideAppFactory
 import io.stanwood.mhwdb.glide.GlideAppFragmentFactory
 import io.stanwood.mhwdb.glide.ImageViewBindingAdapters
 
 @Module
-class ArmorDetailsFragmentSubModule {
+class ArmorsFragmentSubModule {
     @Provides
-    internal fun provideGlideAppFragmentFactory(fragment: ArmorDetailsFragment): GlideAppFactory =
+    internal fun provideGlideAppFragmentFactory(fragment: ArmorsFragment): GlideAppFactory =
         GlideAppFragmentFactory(fragment)
 
     @Provides
@@ -30,12 +30,9 @@ class ArmorDetailsFragmentSubModule {
         }
 
     @Provides
-    internal fun provideArmorDetailsDataProvider(
-        fragment: ArmorDetailsFragment,
-        dataProviderFactory: ViewDataProviderFactory<ArmorDetailsDataProviderImpl>
-    ): ArmorDetailsDataProvider =
-        ViewModelProviders.of(
-            fragment,
-            dataProviderFactory
-        ).get(ArmorDetailsDataProviderImpl::class.java)
+    internal fun provideArmorDataProvider(
+        fragment: ArmorsFragment,
+        dataProviderFactory: ViewDataProviderFactory<ArmorDataProviderImpl>
+    ): ArmorDataProvider =
+        ViewModelProviders.of(fragment, dataProviderFactory).get(ArmorDataProviderImpl::class.java)
 }

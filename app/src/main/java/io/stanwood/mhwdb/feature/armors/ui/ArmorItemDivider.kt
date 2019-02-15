@@ -1,4 +1,4 @@
-package io.stanwood.mhwdb.feature.armor.ui
+package io.stanwood.mhwdb.feature.armors.ui
 
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -27,7 +27,7 @@ class ArmorItemDivider(val divider: Drawable) : RecyclerView.ItemDecoration() {
         val childCount = parent.childCount
         for (i in 0 until childCount) {
             parent.getChildAt(i).apply {
-                if (parent.getChildViewHolder(this) is ArmorListAdapter.DividerViewHolder) {
+                if (parent.getChildViewHolder(this) is ArmorsAdapter.DividerViewHolder) {
                     parent.getDecoratedBoundsWithMargins(this, bounds)
                     val bottom = bounds.top + divider.intrinsicHeight + Math.round(this.translationY)
                     val top = bottom - divider.intrinsicHeight
@@ -40,7 +40,7 @@ class ArmorItemDivider(val divider: Drawable) : RecyclerView.ItemDecoration() {
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        if (parent.getChildViewHolder(view) is ArmorListAdapter.DividerViewHolder) {
+        if (parent.getChildViewHolder(view) is ArmorsAdapter.DividerViewHolder) {
             outRect.set(0, 0, 0, divider.intrinsicHeight)
         }
 

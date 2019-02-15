@@ -1,10 +1,10 @@
-package io.stanwood.mhwdb.feature.armor.vm
+package io.stanwood.mhwdb.feature.armors.vm
 
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.stanwood.framework.arch.core.Resource
 import io.stanwood.framework.arch.core.ViewModel
-import io.stanwood.mhwdb.feature.armor.dataprovider.ArmorDetailsDataProvider
+import io.stanwood.mhwdb.feature.armors.dataprovider.ArmorDetailsDataProvider
 import io.stanwood.mhwdb.repository.mhw.Armor
 import javax.inject.Inject
 

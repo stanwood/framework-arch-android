@@ -1,11 +1,11 @@
-package io.stanwood.mhwdb.feature.armor.dataprovider
+package io.stanwood.mhwdb.feature.armors.dataprovider
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import io.stanwood.framework.arch.core.Resource
 import io.stanwood.framework.arch.core.ViewDataProvider
-import io.stanwood.mhwdb.feature.armor.vm.ArmorItem
+import io.stanwood.mhwdb.feature.armors.vm.ArmorItem
 import io.stanwood.mhwdb.interactor.GetArmorInteractor
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package io.stanwood.mhwdb.feature.armor.dataprovider
+package io.stanwood.mhwdb.feature.armors.dataprovider
 
 import io.reactivex.Observable
 import io.stanwood.framework.arch.core.Resource

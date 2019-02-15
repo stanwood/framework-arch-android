@@ -6,7 +6,7 @@
 
         <variable
             name="vm"
-            type="io.stanwood.mhwdb.feature.armor.vm.ArmorDetailsItemViewModel" />
+            type="io.stanwood.mhwdb.feature.armors.vm.ArmorDetailsItemViewModel" />
     </data>
 
     <TextView

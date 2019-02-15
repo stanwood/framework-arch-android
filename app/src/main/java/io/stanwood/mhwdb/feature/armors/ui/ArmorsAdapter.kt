@@ -1,4 +1,4 @@
-package io.stanwood.mhwdb.feature.armor.ui
+package io.stanwood.mhwdb.feature.armors.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,9 +10,9 @@ import io.stanwood.framework.databinding.recyclerview.BindingViewHolder
 import io.stanwood.mhwdb.BR
 import io.stanwood.mhwdb.databinding.LayoutArmorItemBinding
 import io.stanwood.mhwdb.databinding.LayoutArmorSetItemBinding
-import io.stanwood.mhwdb.feature.armor.vm.ArmorItem
+import io.stanwood.mhwdb.feature.armors.vm.ArmorItem
 
-class ArmorListAdapter(
+class ArmorsAdapter(
     private val inflater: LayoutInflater,
     private val dataBindingComponent: DataBindingComponent,
     private val clickCallback: ((ArmorItem) -> Unit)

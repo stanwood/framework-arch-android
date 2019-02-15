@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="io.stanwood.mhwdb.feature.armor.vm.ArmorItem.SetViewModel" />
+            type="io.stanwood.mhwdb.feature.armors.vm.ArmorItem.SetViewModel" />
 
     </data>
 

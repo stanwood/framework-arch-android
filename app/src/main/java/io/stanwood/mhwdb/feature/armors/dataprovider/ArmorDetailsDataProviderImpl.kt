@@ -1,4 +1,4 @@
-package io.stanwood.mhwdb.feature.armor.dataprovider
+package io.stanwood.mhwdb.feature.armors.dataprovider
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign

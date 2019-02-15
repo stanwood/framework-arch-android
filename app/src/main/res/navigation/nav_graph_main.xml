@@ -9,7 +9,7 @@
         android:name="io.stanwood.mhwdb.feature.container.ui.ContainerFragment" />
     <fragment
         android:id="@+id/armorDetailsFragment"
-        android:name="io.stanwood.mhwdb.feature.armor.ui.ArmorDetailsFragment">
+        android:name="io.stanwood.mhwdb.feature.armors.ui.ArmorDetailsFragment">
         <argument
             android:name="armorId"
             app:argType="java.lang.Long"

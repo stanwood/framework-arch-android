@@ -1,4 +1,4 @@
-package io.stanwood.mhwdb.feature.armor.vm
+package io.stanwood.mhwdb.feature.armors.vm
 
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable

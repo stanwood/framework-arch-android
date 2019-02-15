@@ -1,4 +1,4 @@
-package io.stanwood.mhwdb.feature.armor.vm
+package io.stanwood.mhwdb.feature.armors.vm
 
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -8,10 +8,10 @@ import io.stanwood.framework.arch.core.Resource
 import io.stanwood.framework.arch.core.ViewModel
 import io.stanwood.framework.arch.nav.NavigationTarget
 import io.stanwood.mhwdb.NavGraphMainDirections
-import io.stanwood.mhwdb.feature.armor.dataprovider.ArmorDataProvider
+import io.stanwood.mhwdb.feature.armors.dataprovider.ArmorDataProvider
 import javax.inject.Inject
 
-class ArmorListViewModel @Inject constructor(private val dataProvider: ArmorDataProvider) : ViewModel {
+class ArmorsViewModel @Inject constructor(private val dataProvider: ArmorDataProvider) : ViewModel {
     private val navigation = PublishSubject.create<NavigationTarget>()
     val navigator = navigation.firstElement()
     private val expandedSetsSubject = BehaviorSubject.create<MutableSet<Long>>()

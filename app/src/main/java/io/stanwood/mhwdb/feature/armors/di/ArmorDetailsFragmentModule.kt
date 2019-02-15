@@ -1,8 +1,8 @@
-package io.stanwood.mhwdb.feature.armor.di
+package io.stanwood.mhwdb.feature.armors.di
 
 import dagger.Module
 import io.stanwood.framework.arch.di.module.FragmentModule
-import io.stanwood.mhwdb.feature.armor.ui.ArmorDetailsFragment
+import io.stanwood.mhwdb.feature.armors.ui.ArmorDetailsFragment
 
 @Module(includes = [ArmorDetailsFragmentSubModule::class])
 abstract class ArmorDetailsFragmentModule : FragmentModule<ArmorDetailsFragment>() {

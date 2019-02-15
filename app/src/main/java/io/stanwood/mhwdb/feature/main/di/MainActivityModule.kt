@@ -4,8 +4,8 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import io.stanwood.framework.arch.di.module.ActivityModule
 import io.stanwood.framework.arch.di.scope.FragmentScope
-import io.stanwood.mhwdb.feature.armor.di.ArmorDetailsFragmentModule
-import io.stanwood.mhwdb.feature.armor.ui.ArmorDetailsFragment
+import io.stanwood.mhwdb.feature.armors.di.ArmorDetailsFragmentModule
+import io.stanwood.mhwdb.feature.armors.ui.ArmorDetailsFragment
 import io.stanwood.mhwdb.feature.container.di.ContainerFragmentModule
 import io.stanwood.mhwdb.feature.container.ui.ContainerFragment
 import io.stanwood.mhwdb.feature.main.ui.MainActivity
