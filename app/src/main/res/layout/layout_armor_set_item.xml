@@ -36,7 +36,7 @@
             android:layout_height="24dp"
             android:layout_marginEnd="@dimen/list_item_padding"
             android:src="@drawable/ic_expand_more_black_24dp"
-            android:stateListAnimator="@animator/selecter"
+            android:stateListAnimator="@animator/selector_rotate_180"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/title"
