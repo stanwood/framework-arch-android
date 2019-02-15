@@ -12,8 +12,7 @@ import io.stanwood.mhwdb.databinding.LayoutArmorItemBinding
 import io.stanwood.mhwdb.databinding.LayoutArmorSetItemBinding
 import io.stanwood.mhwdb.feature.armor.vm.ArmorItem
 
-
-class ArmorAdapter(
+class ArmorListAdapter(
     private val inflater: LayoutInflater,
     private val dataBindingComponent: DataBindingComponent,
     private val clickCallback: ((ArmorItem) -> Unit)

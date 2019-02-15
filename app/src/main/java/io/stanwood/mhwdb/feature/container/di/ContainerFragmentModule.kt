@@ -4,8 +4,8 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import io.stanwood.framework.arch.di.module.FragmentModule
 import io.stanwood.framework.arch.di.scope.ChildFragmentScope
-import io.stanwood.mhwdb.feature.armor.di.ArmorFragmentModule
-import io.stanwood.mhwdb.feature.armor.ui.ArmorFragment
+import io.stanwood.mhwdb.feature.armor.di.ArmorListFragmentModule
+import io.stanwood.mhwdb.feature.armor.ui.ArmorListFragment
 import io.stanwood.mhwdb.feature.container.ui.ContainerFragment
 import io.stanwood.mhwdb.feature.weapons.di.WeaponsFragmentModule
 import io.stanwood.mhwdb.feature.weapons.di.WeaponsPagerFragmentModule
@@ -20,8 +20,8 @@ abstract class ContainerFragmentModule : FragmentModule<ContainerFragment>() {
     internal abstract fun contributeWeaponsFragment(): WeaponsFragment
 
     @ChildFragmentScope
-    @ContributesAndroidInjector(modules = [ArmorFragmentModule::class])
-    internal abstract fun contributeArmorFragment(): ArmorFragment
+    @ContributesAndroidInjector(modules = [ArmorListFragmentModule::class])
+    internal abstract fun contributeArmorFragment(): ArmorListFragment
 
     @ChildFragmentScope
     @ContributesAndroidInjector(modules = [WeaponsPagerFragmentModule::class])

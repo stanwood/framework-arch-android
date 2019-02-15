@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- TODO: Change ids and titles -->
     <item
-        android:id="@+id/firstItem"
+        android:id="@+id/action_armor"
         android:icon="@mipmap/ic_launcher"
         android:title="@string/container_first_title"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/secondItem"
+        android:id="@+id/action_weapon"
         android:icon="@mipmap/ic_launcher"
         android:title="@string/container_second_title"
         app:showAsAction="ifRoom" />

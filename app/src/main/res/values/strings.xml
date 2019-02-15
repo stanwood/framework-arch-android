@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MhwDb</string>
-    <string name="container_first_title">first</string>
-    <string name="container_second_title">second</string>
+    <string name="container_first_title">Armor</string>
+    <string name="container_second_title">Weapon</string>
     <string name="container_third_title">third</string>
     <string name="weapons_title">Weapons</string>
     <string name="armor_title">Armor</string>

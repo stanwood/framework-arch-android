@@ -11,7 +11,7 @@ import io.stanwood.mhwdb.NavGraphMainDirections
 import io.stanwood.mhwdb.feature.armor.dataprovider.ArmorDataProvider
 import javax.inject.Inject
 
-class ArmorViewModel @Inject constructor(private val dataProvider: ArmorDataProvider) : ViewModel {
+class ArmorListViewModel @Inject constructor(private val dataProvider: ArmorDataProvider) : ViewModel {
     private val navigation = PublishSubject.create<NavigationTarget>()
     val navigator = navigation.firstElement()
     private val expandedSetsSubject = BehaviorSubject.create<MutableSet<Long>>()

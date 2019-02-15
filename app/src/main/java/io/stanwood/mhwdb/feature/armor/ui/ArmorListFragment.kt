@@ -15,14 +15,14 @@ import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
 import io.stanwood.mhwdb.R
 import io.stanwood.mhwdb.databinding.FragmentArmorBinding
-import io.stanwood.mhwdb.feature.armor.vm.ArmorViewModel
+import io.stanwood.mhwdb.feature.armor.vm.ArmorListViewModel
 import javax.inject.Inject
 
-class ArmorFragment : Fragment(), HasSupportFragmentInjector {
+class ArmorListFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
-    internal lateinit var viewModelFactory: ViewModelFactory<ArmorViewModel>
-    private var viewModel: ArmorViewModel? = null
+    internal lateinit var viewModelFactory: ViewModelFactory<ArmorListViewModel>
+    private var viewModel: ArmorListViewModel? = null
     @Inject
     internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
     @Inject
@@ -30,14 +30,14 @@ class ArmorFragment : Fragment(), HasSupportFragmentInjector {
     @Inject
     internal lateinit var mainNavController: NavController
     private var binding: FragmentArmorBinding? = null
-    private var rcvAdapter: ArmorAdapter? = null
+    private var rcvAdapter: ArmorListAdapter? = null
 
     override fun supportFragmentInjector() = androidInjector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
-        viewModel = viewModelFactory.create(ArmorViewModel::class.java)
+        viewModel = viewModelFactory.create(ArmorListViewModel::class.java)
             .apply {
                 savedInstanceState?.getLongArray(KEY_EXPANDED_SETS)?.apply {
                     expandedSets.addAll(this.asList())
@@ -61,7 +61,7 @@ class ArmorFragment : Fragment(), HasSupportFragmentInjector {
             }
             lifecycleOwner = viewLifecycleOwner
         }
-        rcvAdapter = ArmorAdapter(LayoutInflater.from(context), dataBindingComponent) { viewModel?.itemClicked(it) }
+        rcvAdapter = ArmorListAdapter(LayoutInflater.from(context), dataBindingComponent) { viewModel?.itemClicked(it) }
         viewModel?.apply {
             items.subscribeBy(viewLifecycleOwner, onNext = {
                 binding?.rcv?.apply {
