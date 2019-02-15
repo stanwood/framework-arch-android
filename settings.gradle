@@ -19,4 +19,4 @@
  * SOFTWARE.
  */
 
-include ':di', ':core', ':nav'
+include ':di', ':core', ':nav', ':app'
