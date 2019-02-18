@@ -31,35 +31,36 @@ import io.stanwood.framework.arch.core.Resource
 
 object ResourceTransformer {
     fun <T> fromObservable(
-        resumeInCaseOfError: ((Throwable) -> Observable<T>)? = null
-    ): ObservableTransformer<T, Resource<T>> =
-        ObservableResourceTransformer(resumeInCaseOfError)
+        transform: ((Throwable) -> String) = { it.localizedMessage }
+    ): ObservableTransformer<T, Resource<T>> = ObservableResourceTransformer(transform)
 
     fun <T> fromSingle(
-        resumeInCaseOfError: ((Throwable) -> Single<T>)? = null
+        transform: ((Throwable) -> String) = { it.localizedMessage }
     ): SingleTransformer<T, Resource<T>> =
-        SingleResourceTransformer(resumeInCaseOfError)
+        SingleResourceTransformer(transform)
 
     private class ObservableResourceTransformer<T>(
-        private inline val resumeInCaseOfError: ((Throwable) -> Observable<T>)? = null
+        private inline val exceptionMap: ((Throwable)) -> String
     ) : ObservableTransformer<T, Resource<T>> {
         override fun apply(upstream: Observable<T>): ObservableSource<Resource<T>> =
-            (resumeInCaseOfError?.let { upstream.onErrorResumeNext(it) } ?: upstream)
+            upstream
                 .map { createSuccess(it) }
-                .onErrorReturn { createFailed(it) }
+                .onErrorReturn { createFailed(it, exceptionMap) }
     }
 
     private class SingleResourceTransformer<T>(
-        private inline val resumeInCaseOfError: ((Throwable) -> Single<T>)? = null
+        private inline val exceptionMap: ((Throwable)) -> String
     ) : SingleTransformer<T, Resource<T>> {
         override fun apply(upstream: Single<T>): SingleSource<Resource<T>> =
-            (resumeInCaseOfError?.let { upstream.onErrorResumeNext(it) } ?: upstream)
+            upstream
                 .map { createSuccess(it) }
-                .onErrorReturn { createFailed(it) }
+                .onErrorReturn { createFailed(it, exceptionMap) }
     }
 
     private fun <T> createSuccess(source: T): Resource<T> =
         Resource.Success(source)
 
-    private fun <T> createFailed(throwable: Throwable): Resource<T> = Resource.Failed(throwable)
+    private fun <T> createFailed(throwable: Throwable, exceptionMap: ((Throwable)) -> String): Resource<T> = Resource.Failed(
+        exceptionMap.invoke(throwable)
+    )
 }

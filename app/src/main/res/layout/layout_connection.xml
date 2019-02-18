@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/padding"
-                android:text="Error"
+                android:text="@{status.msg}"
                 android:textAppearance="@style/TextAppearance.App.Title" />
 
             <Button

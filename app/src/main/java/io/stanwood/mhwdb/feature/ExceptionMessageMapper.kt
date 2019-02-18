@@ -19,10 +19,23 @@
  * SOFTWARE.
  */
 
-package io.stanwood.framework.arch.core
+package io.stanwood.mhwdb.feature
 
-sealed class Resource<out T>(open val data: T? = null) {
-    data class Success<out T>(override val data: T) : Resource<T>()
-    class Failed<out T>(val msg: String, data: T? = null) : Resource<T>(data)
-    class Loading<out T> : Resource<T>()
+import android.content.Context
+import io.stanwood.framework.network.util.NoConnectivityException
+import io.stanwood.mhwdb.R
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
+
+class ExceptionMessageMapper(val context: Context) : (Throwable) -> String {
+    override fun invoke(throwable: Throwable): String =
+        context.resources.let {
+            when (throwable) {
+                is HttpException -> it.getString(R.string.error_response, throwable.code())
+                is NoConnectivityException, is SocketTimeoutException -> it.getString(R.string.error_no_connection)
+                else -> it.getString(R.string.error_unknown)
+            }
+        }
 }
+
+

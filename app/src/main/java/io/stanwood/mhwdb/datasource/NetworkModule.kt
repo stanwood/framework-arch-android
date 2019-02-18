@@ -11,6 +11,7 @@ import io.stanwood.framework.network.interceptor.ConnectivityInterceptor
 import io.stanwood.framework.network.retrofit.BufferedSourceConverterFactory
 import io.stanwood.mhwdb.BuildConfig
 import io.stanwood.mhwdb.datasource.net.mhw.MhwApi
+import io.stanwood.mhwdb.feature.ExceptionMessageMapper
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -50,6 +51,10 @@ class NetworkModule {
     @Singleton
     @Provides
     internal fun provideMhwApi(retrofit: Retrofit) = retrofit.create(MhwApi::class.java)
+
+    @Singleton
+    @Provides
+    internal fun provideExceptionMapper(context: Application) = ExceptionMessageMapper(context)
 
     @Provides
     @Singleton

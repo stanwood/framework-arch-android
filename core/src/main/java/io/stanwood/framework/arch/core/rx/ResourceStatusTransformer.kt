@@ -38,20 +38,19 @@ object ResourceStatusTransformer {
     fun <T> fromSingle(): SingleTransformer<Resource<T>, ResourceStatus> =
         SingleResourceTransformer()
 
-    private class ObservableResourceTransformer<T>() : ObservableTransformer<Resource<T>, ResourceStatus> {
+    private class ObservableResourceTransformer<T> : ObservableTransformer<Resource<T>, ResourceStatus> {
         override fun apply(upstream: Observable<Resource<T>>): ObservableSource<ResourceStatus> =
-            upstream
-                .map { createSuccess(it) }
+            upstream.map { toStatus(it) }
     }
 
     private class SingleResourceTransformer<T> : SingleTransformer<Resource<T>, ResourceStatus> {
         override fun apply(upstream: Single<Resource<T>>): SingleSource<ResourceStatus> =
-            upstream.map { createSuccess(it) }
+            upstream.map { toStatus(it) }
     }
 
-    private fun <T> createSuccess(source: Resource<T>): ResourceStatus =
+    private fun <T> toStatus(source: Resource<T>): ResourceStatus =
         source.data?.let { ResourceStatus.Success } ?: when (source) {
-            is Resource.Failed -> ResourceStatus.Error(source.e.localizedMessage)
+            is Resource.Failed -> ResourceStatus.Error(source.msg)
             is Resource.Loading -> ResourceStatus.Loading
             else -> ResourceStatus.Success
         }

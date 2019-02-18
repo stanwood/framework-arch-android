@@ -7,10 +7,15 @@ import io.reactivex.subjects.PublishSubject
 import io.stanwood.framework.arch.core.Resource
 import io.stanwood.framework.arch.core.ViewDataProvider
 import io.stanwood.framework.arch.core.rx.ResourceTransformer
+import io.stanwood.mhwdb.feature.ExceptionMessageMapper
 import io.stanwood.mhwdb.interactor.GetWeaponTypesInteractor
 import javax.inject.Inject
 
-class WeaponsPagerDataProviderImpl @Inject constructor(val weaponTypesInteractor: GetWeaponTypesInteractor) : ViewDataProvider(),
+class WeaponsPagerDataProviderImpl @Inject constructor(
+    private val weaponTypesInteractor: GetWeaponTypesInteractor,
+    private val exceptionMapper: ExceptionMessageMapper
+) :
+    ViewDataProvider(),
     WeaponsPagerDataProvider {
     private var disposable: CompositeDisposable = CompositeDisposable()
     private val retrySubject = PublishSubject.create<Unit>()
@@ -20,7 +25,10 @@ class WeaponsPagerDataProviderImpl @Inject constructor(val weaponTypesInteractor
             .switchMap {
                 Observable.concat(
                     Observable.just(Resource.Loading()),
-                    weaponTypesInteractor.getWeaponTypes().compose(ResourceTransformer.fromSingle()).toObservable()
+                    weaponTypesInteractor
+                        .getWeaponTypes()
+                        .compose(ResourceTransformer.fromSingle(exceptionMapper))
+                        .toObservable()
                 )
             }
             .replay(1)
