@@ -4,11 +4,9 @@
 
     <data>
 
-        <import type="io.stanwood.framework.arch.core.Status" />
-
         <variable
             name="status"
-            type="io.stanwood.framework.arch.core.Status" />
+            type="io.stanwood.framework.arch.core.ResourceStatus" />
 
         <variable
             name="retryCallback"

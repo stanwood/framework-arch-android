@@ -21,8 +21,18 @@
 
 package io.stanwood.framework.arch.core
 
-sealed class Resource<out T>(open val data: T? = null) {
-    data class Success<out T>(override val data: T) : Resource<T>()
-    class Failed<out T>(val e: Throwable, data: T? = null) : Resource<T>(data)
-    class Loading<out T> : Resource<T>()
+sealed class ResourceStatus(val msg: String? = null) {
+    open val isLoading = false
+    open val isError = false
+    val isSuccess
+        get() = !isLoading && isError
+
+    object Success : ResourceStatus()
+    object Loading : ResourceStatus() {
+        override val isLoading = true
+    }
+
+    class Error(msg: String) : ResourceStatus(msg) {
+        override val isError = true
+    }
 }

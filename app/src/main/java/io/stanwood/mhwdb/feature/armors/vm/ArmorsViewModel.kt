@@ -4,6 +4,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.stanwood.framework.arch.core.ViewModel
+import io.stanwood.framework.arch.core.rx.ResourceStatusTransformer
 import io.stanwood.framework.arch.nav.NavigationTarget
 import io.stanwood.mhwdb.NavGraphMainDirections
 import io.stanwood.mhwdb.feature.armors.dataprovider.ArmorDataProvider
@@ -39,7 +40,9 @@ class ArmorsViewModel @Inject constructor(private val dataProvider: ArmorDataPro
         dataProvider.retry()
     }
 
-    val status = dataProvider.data.map { it.status }.observeOn(AndroidSchedulers.mainThread())!!
+    val status = dataProvider.data
+        .compose(ResourceStatusTransformer.fromObservable())
+        .observeOn(AndroidSchedulers.mainThread())!!
 
     fun itemClicked(item: ArmorItem) {
         when (item) {

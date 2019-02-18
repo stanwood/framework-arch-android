@@ -28,38 +28,31 @@ import io.reactivex.Single
 import io.reactivex.SingleSource
 import io.reactivex.SingleTransformer
 import io.stanwood.framework.arch.core.Resource
+import io.stanwood.framework.arch.core.ResourceStatus
 
-object ResourceTransformer {
+object ResourceStatusTransformer {
     fun <T> fromObservable(
-        resumeInCaseOfError: ((Throwable) -> Observable<T>)? = null
-    ): ObservableTransformer<T, Resource<T>> =
-        ObservableResourceTransformer(resumeInCaseOfError)
+    ): ObservableTransformer<Resource<T>, ResourceStatus> =
+        ObservableResourceTransformer()
 
-    fun <T> fromSingle(
-        resumeInCaseOfError: ((Throwable) -> Single<T>)? = null
-    ): SingleTransformer<T, Resource<T>> =
-        SingleResourceTransformer(resumeInCaseOfError)
+    fun <T> fromSingle(): SingleTransformer<Resource<T>, ResourceStatus> =
+        SingleResourceTransformer()
 
-    private class ObservableResourceTransformer<T>(
-        private inline val resumeInCaseOfError: ((Throwable) -> Observable<T>)? = null
-    ) : ObservableTransformer<T, Resource<T>> {
-        override fun apply(upstream: Observable<T>): ObservableSource<Resource<T>> =
-            (resumeInCaseOfError?.let { upstream.onErrorResumeNext(it) } ?: upstream)
+    private class ObservableResourceTransformer<T>() : ObservableTransformer<Resource<T>, ResourceStatus> {
+        override fun apply(upstream: Observable<Resource<T>>): ObservableSource<ResourceStatus> =
+            upstream
                 .map { createSuccess(it) }
-                .onErrorReturn { createFailed(it) }
     }
 
-    private class SingleResourceTransformer<T>(
-        private inline val resumeInCaseOfError: ((Throwable) -> Single<T>)? = null
-    ) : SingleTransformer<T, Resource<T>> {
-        override fun apply(upstream: Single<T>): SingleSource<Resource<T>> =
-            (resumeInCaseOfError?.let { upstream.onErrorResumeNext(it) } ?: upstream)
-                .map { createSuccess(it) }
-                .onErrorReturn { createFailed(it) }
+    private class SingleResourceTransformer<T> : SingleTransformer<Resource<T>, ResourceStatus> {
+        override fun apply(upstream: Single<Resource<T>>): SingleSource<ResourceStatus> =
+            upstream.map { createSuccess(it) }
     }
 
-    private fun <T> createSuccess(source: T): Resource<T> =
-        Resource.Success(source)
-
-    private fun <T> createFailed(throwable: Throwable): Resource<T> = Resource.Failed(throwable)
+    private fun <T> createSuccess(source: Resource<T>): ResourceStatus =
+        source.data?.let { ResourceStatus.Success } ?: when (source) {
+            is Resource.Failed -> ResourceStatus.Error(source.e.localizedMessage)
+            is Resource.Loading -> ResourceStatus.Loading
+            else -> ResourceStatus.Success
+        }
 }

@@ -3,6 +3,7 @@ package io.stanwood.mhwdb.feature.weapons.vm
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.stanwood.framework.arch.core.ViewModel
+import io.stanwood.framework.arch.core.rx.ResourceStatusTransformer
 import io.stanwood.mhwdb.feature.weapons.dataprovider.WeaponsPagerDataProvider
 import javax.inject.Inject
 
@@ -18,7 +19,9 @@ class WeaponsPagerViewModel @Inject constructor(private val dataProvider: Weapon
         dataProvider.retry()
     }
 
-    val status = dataProvider.data.map { it.status }.observeOn(AndroidSchedulers.mainThread())!!
+    val status = dataProvider.data
+        .compose(ResourceStatusTransformer.fromObservable())
+        .observeOn(AndroidSchedulers.mainThread())!!
 
     fun destroy() {
     }
