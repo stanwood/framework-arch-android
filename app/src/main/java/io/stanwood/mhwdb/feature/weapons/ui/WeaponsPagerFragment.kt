@@ -38,6 +38,7 @@ class WeaponsPagerFragment : Fragment(), HasSupportFragmentInjector {
         FragmentWeaponsPagerBinding.inflate(inflater, container, false)
             .apply {
                 binding = this
+                retryCallback = View.OnClickListener { viewModel?.retry() }
             }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,15 +46,20 @@ class WeaponsPagerFragment : Fragment(), HasSupportFragmentInjector {
         binding?.apply {
             lifecycleOwner = viewLifecycleOwner
         }
-        viewModel?.items?.subscribeBy(viewLifecycleOwner, onNext = {
-            it?.also { items ->
-                binding?.apply {
-                    pagerAdapter = WeaponsPagerAdapter(childFragmentManager, requireContext(), items)
-                    pager.adapter = pagerAdapter
-                    tabLayout.setupWithViewPager(pager)
+        viewModel?.apply {
+            items.subscribeBy(viewLifecycleOwner, onNext = {
+                it?.also { items ->
+                    binding?.apply {
+                        pagerAdapter = WeaponsPagerAdapter(childFragmentManager, requireContext(), items)
+                        pager.adapter = pagerAdapter
+                        tabLayout.setupWithViewPager(pager)
+                    }
                 }
-            }
-        })
+            })
+            status.subscribeBy(viewLifecycleOwner, onNext = {
+                binding?.status = it
+            })
+        }
     }
 
     override fun onDestroyView() {

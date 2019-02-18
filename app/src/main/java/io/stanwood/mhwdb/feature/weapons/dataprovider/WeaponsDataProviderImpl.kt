@@ -4,6 +4,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.BehaviorSubject
 import io.stanwood.framework.arch.core.ViewDataProvider
+import io.stanwood.framework.arch.core.rx.ResourceTransformer
 import io.stanwood.mhwdb.interactor.GetWeaponByTypeInteractor
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ class WeaponsDataProviderImpl @Inject constructor(val interactor: GetWeaponByTyp
     override val data =
         weaponTypeSubject
             .switchMap {
-                interactor.getWeapons(it).toObservable()
+                interactor.getWeapons(it).compose(ResourceTransformer.fromSingle()).toObservable()
             }
             .replay(1)
             .autoConnect(1) { disposable += it }

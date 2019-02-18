@@ -4,6 +4,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.BehaviorSubject
 import io.stanwood.framework.arch.core.ViewDataProvider
+import io.stanwood.framework.arch.core.rx.ResourceTransformer
 import io.stanwood.mhwdb.interactor.GetArmorByIdInteractor
 import javax.inject.Inject
 
@@ -19,12 +20,10 @@ class ArmorDetailsDataProviderImpl @Inject constructor(val interactor: GetArmorB
         }
     override val data =
         idSubject.switchMap {
-            interactor.getArmor(it)
-                .toObservable()
+            interactor.getArmor(it).compose(ResourceTransformer.fromSingle()).toObservable()
         }
             .replay(1)
             .autoConnect(1) { disposable += it }
-
 
     override fun onCleared() {
         super.onCleared()

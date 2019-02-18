@@ -7,5 +7,4 @@ import io.stanwood.mhwdb.feature.weapons.ui.WeaponsFragment
 @Module(includes = [WeaponsFragmentSubModule::class])
 abstract class WeaponsFragmentModule : FragmentModule<WeaponsFragment>() {
 
-
 }

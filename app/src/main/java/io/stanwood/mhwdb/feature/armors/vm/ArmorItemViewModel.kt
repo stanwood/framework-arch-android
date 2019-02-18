@@ -26,5 +26,4 @@ sealed class ArmorItem(val id: Long, val title: String, val viewType: Int, val i
             const val VIEW_TYPE = 2
         }
     }
-
 }

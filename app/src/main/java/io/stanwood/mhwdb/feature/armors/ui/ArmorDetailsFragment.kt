@@ -69,7 +69,7 @@ class ArmorDetailsFragment : Fragment(), HasSupportFragmentInjector {
                 }
             })
 
-            header.subscribeBy(viewLifecycleOwner, onNext = {
+            data.subscribeBy(viewLifecycleOwner, onNext = {
                 binding?.armor = it
             })
 

@@ -49,6 +49,7 @@ class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
         FragmentArmorBinding.inflate(inflater, container, false, dataBindingComponent)
             .apply {
                 binding = this
+                retryCallback = View.OnClickListener { viewModel?.retry() }
             }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,6 +73,9 @@ class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
                         submitList(it)
                     }
                 }
+            })
+            status.subscribeBy(viewLifecycleOwner, onNext = {
+                binding?.status = it
             })
             navigator.subscribeBy(
                 viewLifecycleOwner,

@@ -49,7 +49,6 @@ class WeaponsAdapter(
                 }
             })
 
-
     override fun onBindViewHolder(
         holder: BindingViewHolder,
         position: Int,

@@ -43,6 +43,5 @@ class ArmorItemDivider(val divider: Drawable) : RecyclerView.ItemDecoration() {
         if (parent.getChildViewHolder(view) is ArmorsAdapter.DividerViewHolder) {
             outRect.set(0, 0, 0, divider.intrinsicHeight)
         }
-
     }
 }

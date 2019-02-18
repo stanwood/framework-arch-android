@@ -19,16 +19,16 @@
  * SOFTWARE.
  */
 
-package io.stanwood.framework.arch.core
+package io.stanwood.mhwdb.databinding
 
-sealed class Resource<out T>(val status: Status, open val data: T? = null) {
-    data class Success<out T>(override val data: T) : Resource<T>(Status.SUCCESS)
-    class Failed<out T>(val e: Throwable, data: T? = null) : Resource<T>(Status.ERROR, data)
-    class Loading<out T> : Resource<T>(Status.LOADING)
-}
+import androidx.core.widget.ContentLoadingProgressBar
+import androidx.databinding.BindingAdapter
 
-enum class Status {
-    SUCCESS,
-    ERROR,
-    LOADING
+@BindingAdapter("isLoading")
+fun setLoading(view: ContentLoadingProgressBar, loading: Boolean?) {
+    if (loading == true) {
+        view.show()
+    } else {
+        view.hide()
+    }
 }

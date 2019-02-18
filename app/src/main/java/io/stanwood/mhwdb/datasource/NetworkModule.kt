@@ -55,5 +55,4 @@ class NetworkModule {
     @Singleton
     fun provideFileSystem(context: Application): FileSystem =
         FileSystemFactory.create(File(context.noBackupFilesDir, "store"))
-
 }

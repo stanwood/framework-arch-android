@@ -2,6 +2,18 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <import type="io.stanwood.framework.arch.core.Status" />
+
+        <variable
+            name="status"
+            type="io.stanwood.framework.arch.core.Status" />
+
+        <variable
+            name="retryCallback"
+            type="android.view.View.OnClickListener" />
+    </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -38,6 +50,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <include
+                layout="@layout/layout_connection"
+                app:retryCallback="@{retryCallback}"
+                app:status="@{status}" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
