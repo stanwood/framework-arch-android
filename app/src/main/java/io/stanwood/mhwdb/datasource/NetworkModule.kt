@@ -52,10 +52,6 @@ class NetworkModule {
     @Provides
     internal fun provideMhwApi(retrofit: Retrofit) = retrofit.create(MhwApi::class.java)
 
-    @Singleton
-    @Provides
-    internal fun provideExceptionMapper(context: Application) = ExceptionMessageMapper(context)
-
     @Provides
     @Singleton
     fun provideFileSystem(context: Application): FileSystem =

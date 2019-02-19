@@ -15,8 +15,7 @@ import javax.inject.Inject
 class ArmorDataProviderImpl @Inject constructor(
     private val armorInteractor: GetArmorInteractor,
     private val exceptionMapper: ExceptionMessageMapper
-) : ViewDataProvider(),
-    ArmorDataProvider {
+) : ViewDataProvider(), ArmorDataProvider {
     private var disposable: CompositeDisposable = CompositeDisposable()
     private val retrySubject = PublishSubject.create<Unit>()
 
