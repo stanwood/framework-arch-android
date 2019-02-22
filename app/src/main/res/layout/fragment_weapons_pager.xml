@@ -13,15 +13,15 @@
             type="android.view.View.OnClickListener" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <io.stanwood.framework.ui.widget.InsetLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         app:statusBarBackground="@color/colorPrimaryDark">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
@@ -54,5 +54,5 @@
                 app:retryCallback="@{retryCallback}"
                 app:status="@{status}" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </io.stanwood.framework.ui.widget.InsetLayout>
 </layout>
