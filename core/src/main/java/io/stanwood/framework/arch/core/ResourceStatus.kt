@@ -25,7 +25,7 @@ sealed class ResourceStatus(val msg: String? = null) {
     open val isLoading = false
     open val isError = false
     val isSuccess
-        get() = !isLoading && isError
+        get() = !isLoading && !isError
 
     object Success : ResourceStatus()
     object Loading : ResourceStatus() {
