@@ -37,5 +37,3 @@ class ExceptionMessageMapper(val context: Context) : (Throwable) -> String {
             }
         }
 }
-
-

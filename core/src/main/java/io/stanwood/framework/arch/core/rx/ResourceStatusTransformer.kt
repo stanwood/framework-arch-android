@@ -31,8 +31,7 @@ import io.stanwood.framework.arch.core.Resource
 import io.stanwood.framework.arch.core.ResourceStatus
 
 object ResourceStatusTransformer {
-    fun <T> fromObservable(
-    ): ObservableTransformer<Resource<T>, ResourceStatus> =
+    fun <T> fromObservable(): ObservableTransformer<Resource<T>, ResourceStatus> =
         ObservableResourceTransformer()
 
     fun <T> fromSingle(): SingleTransformer<Resource<T>, ResourceStatus> =
