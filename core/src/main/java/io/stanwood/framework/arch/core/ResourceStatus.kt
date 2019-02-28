@@ -32,7 +32,7 @@ sealed class ResourceStatus(val msg: String? = null) {
         override val isLoading = true
     }
 
-    class Error(msg: String) : ResourceStatus(msg) {
+    class Error(msg: String, val cause: Throwable? = null) : ResourceStatus(msg) {
         override val isError = true
     }
 }

@@ -50,7 +50,7 @@ object ResourceStatusTransformer {
 
     private fun <T> toStatus(source: Resource<T>): ResourceStatus =
         source.data?.let { ResourceStatus.Success } ?: when (source) {
-            is Resource.Failed -> ResourceStatus.Error(source.msg)
+            is Resource.Failed -> ResourceStatus.Error(source.msg, source.cause)
             is Resource.Loading -> ResourceStatus.Loading
             else -> ResourceStatus.Success
         }
