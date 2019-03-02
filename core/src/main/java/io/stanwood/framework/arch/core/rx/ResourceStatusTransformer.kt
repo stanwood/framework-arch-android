@@ -31,11 +31,19 @@ import io.stanwood.framework.arch.core.Resource
 import io.stanwood.framework.arch.core.ResourceStatus
 
 object ResourceStatusTransformer {
+
     fun <T> fromObservable(): ObservableTransformer<Resource<T>, ResourceStatus> =
         ObservableResourceTransformer()
 
     fun <T> fromSingle(): SingleTransformer<Resource<T>, ResourceStatus> =
         SingleResourceTransformer()
+
+    private fun <T> toStatus(source: Resource<T>): ResourceStatus =
+        source.data?.let { ResourceStatus.Success } ?: when (source) {
+            is Resource.Failed -> ResourceStatus.Error(source.msg, source.cause)
+            is Resource.Loading -> ResourceStatus.Loading
+            else -> ResourceStatus.Success
+        }
 
     private class ObservableResourceTransformer<T> : ObservableTransformer<Resource<T>, ResourceStatus> {
         override fun apply(upstream: Observable<Resource<T>>): ObservableSource<ResourceStatus> =
@@ -46,11 +54,4 @@ object ResourceStatusTransformer {
         override fun apply(upstream: Single<Resource<T>>): SingleSource<ResourceStatus> =
             upstream.map { toStatus(it) }
     }
-
-    private fun <T> toStatus(source: Resource<T>): ResourceStatus =
-        source.data?.let { ResourceStatus.Success } ?: when (source) {
-            is Resource.Failed -> ResourceStatus.Error(source.msg, source.cause)
-            is Resource.Loading -> ResourceStatus.Loading
-            else -> ResourceStatus.Success
-        }
 }

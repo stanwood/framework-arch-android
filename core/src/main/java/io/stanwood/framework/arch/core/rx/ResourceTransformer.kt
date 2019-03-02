@@ -28,8 +28,10 @@ import io.reactivex.Single
 import io.reactivex.SingleSource
 import io.reactivex.SingleTransformer
 import io.stanwood.framework.arch.core.Resource
+import timber.log.Timber
 
 object ResourceTransformer {
+
     private val defaultErrorTransformer: ((Throwable) -> String) = { it.message ?: "unknown error" }
     fun <T> fromObservable(
         transform: ((Throwable) -> String) = defaultErrorTransformer
@@ -39,6 +41,14 @@ object ResourceTransformer {
         transform: ((Throwable) -> String) = defaultErrorTransformer
     ): SingleTransformer<T, Resource<T>> =
         SingleResourceTransformer(transform)
+
+    private fun <T> createSuccess(source: T): Resource<T> =
+        Resource.Success(source)
+
+    private fun <T> createFailed(throwable: Throwable, exceptionMap: ((Throwable)) -> String): Resource<T> {
+        Timber.e(throwable)
+        return Resource.Failed(exceptionMap.invoke(throwable), throwable)
+    }
 
     private class ObservableResourceTransformer<T>(
         private inline val exceptionMap: ((Throwable)) -> String
@@ -57,10 +67,4 @@ object ResourceTransformer {
                 .map { createSuccess(it) }
                 .onErrorReturn { createFailed(it, exceptionMap) }
     }
-
-    private fun <T> createSuccess(source: T): Resource<T> =
-        Resource.Success(source)
-
-    private fun <T> createFailed(throwable: Throwable, exceptionMap: ((Throwable)) -> String): Resource<T> =
-        Resource.Failed(exceptionMap.invoke(throwable), throwable)
 }
