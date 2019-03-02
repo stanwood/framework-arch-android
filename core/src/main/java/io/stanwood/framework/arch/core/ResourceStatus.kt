@@ -19,9 +19,20 @@
  * SOFTWARE.
  */
 
-package io.stanwood.mhwdb.repository.mhw
+package io.stanwood.framework.arch.core
 
-import io.stanwood.mhwdb.datasource.net.mhw.MhwArmorSetInfo
+sealed class ResourceStatus(val msg: String? = null) {
+    open val isLoading = false
+    open val isError = false
+    val isSuccess
+        get() = !isLoading && !isError
 
-fun MhwArmorSetInfo.mapToArmorSet(armor: List<Armor>) =
-    ArmorSet(this.id, this.name, this.rank, armor)
+    object Success : ResourceStatus()
+    object Loading : ResourceStatus() {
+        override val isLoading = true
+    }
+
+    class Error(msg: String, val cause: Throwable? = null) : ResourceStatus(msg) {
+        override val isError = true
+    }
+}

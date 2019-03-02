@@ -1,11 +1,8 @@
 package io.stanwood.mhwdb.feature.armors.vm
 
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.stanwood.framework.arch.core.Resource
 import io.stanwood.framework.arch.core.ViewModel
 import io.stanwood.mhwdb.feature.armors.dataprovider.ArmorDetailsDataProvider
-import io.stanwood.mhwdb.repository.mhw.Armor
 import javax.inject.Inject
 
 class ArmorDetailsViewModel @Inject constructor(private val dataProvider: ArmorDetailsDataProvider) :
@@ -15,24 +12,16 @@ class ArmorDetailsViewModel @Inject constructor(private val dataProvider: ArmorD
         dataProvider.armorId = armorId
     }
 
-    val header: Observable<Armor> =
+    val data =
         dataProvider.data
-            .filter {
-                it is Resource.Success
-            }
-            .map {
-                (it as Resource.Success).data
-            }
-            .observeOn(AndroidSchedulers.mainThread())
+            .filter { it.data != null }
+            .map { it.data!! }
+            .observeOn(AndroidSchedulers.mainThread())!!
 
-    val items: Observable<List<ArmorDetailsItemViewModel>> =
-        dataProvider.data.map {
-            when (it) {
-                is Resource.Success -> listOf(ArmorDetailsItemViewModel(it.data.name))
-                else -> emptyList()
-            }
-        }
-            .observeOn(AndroidSchedulers.mainThread())
+    val items =
+        data.map {
+            listOf(ArmorDetailsItemViewModel(it.name))
+        }!!
 
     fun destroy() {
     }

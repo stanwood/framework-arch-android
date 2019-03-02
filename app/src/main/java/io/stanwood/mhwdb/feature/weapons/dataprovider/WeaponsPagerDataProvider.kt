@@ -6,4 +6,5 @@ import io.stanwood.mhwdb.repository.mhw.WeaponType
 
 interface WeaponsPagerDataProvider {
     val data: Observable<Resource<List<WeaponType>>>
+    fun retry()
 }

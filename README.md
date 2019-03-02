@@ -38,13 +38,11 @@ The plugin adds the libraries in this repository to your dependencies for you wh
 
 For detailed usage of the various libraries in this repository please refer to the README's of the respective libraries. You can find them at the root of the library folders, e.g. _di/README.md_.
 
-**TODO: update library READMEs*
-
-The sample app is located in a [separate repository](https://github.com/stanwood/architecture_sample_github_android) (private for now) to ensure that we package all changes properly and ready to use. We might merge both projects at a later stage.
+Find a sample app showing off more (also advanced concepts like loading state, error handling, paging etc.) in the _app_ folder.
 
 ## Kotlin
 
-All our apps are written in Kotlin and that's what the IntelliJ plugin and the libraries target. We don't offer any official Java support although many classes in the libraries might work just fine when using in combination with Java as well.
+All our apps are written in Kotlin and that's what the IntelliJ plugin and the libraries target. We don't offer any official Java support although many classes in the libraries might work just fine when used in combination with Java as well.
 
 ## Dependencies
 
@@ -84,7 +82,7 @@ Interactors are *always* located in the *interactor* package in the app root pac
 
 ## General architecture
 
-![Architecture](https://i.imgur.com/PhMI1XZ.jpg)
+![Architecture](https://i.imgur.com/MxrQdaP.jpg)
 
 The overall architecture consists of three layers:
 
@@ -111,27 +109,29 @@ When a DB is needed we prefer *Room* for its reactive interface which integrates
 A simple repository implementation might look like this (the IntelliJ plugin will aid you in creating similar classes within seconds):
 
 ```kotlin
-class SampleRepository @Inject constructor(private val api: SampleApi, fileSystem: FileSystem) {
+class MhwRepository @Inject constructor(private val api: MhwApi, fileSystem: FileSystem) {
+    companion object {
+        private val allArmor = BarCode("Armor", "all")
+    }
+
     private val sourcePersister = SourcePersisterFactory.create(fileSystem, 60, TimeUnit.MINUTES)
     private val memoryPolicy =
         MemoryPolicy.builder().setExpireAfterWrite(30).setExpireAfterTimeUnit(TimeUnit.MINUTES)
             .build()
-    private val sampleStore by lazy {
-        SerializationSourceParser(RestApiSampleData.serializer().list)
-            .withFetcher(Fetcher { api.getSampleData() }) // getSampleData() returns a BufferedSource
+
+    private val armorStore by lazy {
+        SerializationParserFactory.createSourceParser(MhwArmor.serializer().list)
+            .fetchFrom { api.fetchArmor() }
             .open()
     }
 
-    fun refreshSampleData() {
-        sampleStore.clear(BarCode("type", "all"))
-    }
+    fun fetchArmorById(id: Long): Single<Armor> =
+        armorStore.get(allArmor).map { src ->
+            src.first { it.id == id }
+                .mapToArmor()
+        }
 
-    fun fetchSampleData(): Observable<Resource<List<SampleData>>> =
-        sampleStore.getRefreshing(BarCode("type", "all"))
-            .compose(ResourceTransformer.fromObservable({ src -> src.map { it.mapToDomain() } }))
-
-
-    private fun <T> SerializationSourceParser<T>.withFetcher(fetcher: Fetcher<BufferedSource, BarCode>) =
+    private fun <T> Parser<BufferedSource, T>.fetchFrom(fetcher: (BarCode) -> Single<BufferedSource>) =
         StoreBuilder.parsedWithKey<BarCode, BufferedSource, T>()
             .fetcher(fetcher)
             .persister(sourcePersister)
@@ -151,7 +151,14 @@ Even if an Interactor just fetches data straight from one Repository don't feel 
 
 Interactors are usually quite tightly scoped and thus very reusable. It is not uncommon for ViewDataProviders to access multiple interactors to get the data needed by its ViewModel.
 
-** TODO provide sample implementation**
+An Interactor can be as simple as the following, but it can get much more complex when user handling, dynamic feature flags and merging of data from different sources (usually repositories) are involved:
+
+```kotlin
+class GetArmorInteractor @Inject constructor(private val repository: MhwRepository) {
+
+    fun getArmor() = repository.fetchArmorSets()
+}
+```
 
 ## View layer
 
@@ -170,23 +177,33 @@ The ViewDataProvider is also where you would implement refresh handling and wher
 A simple ViewDataProvider might look like this:
 
 ```kotlin
-class SampleDataProviderImpl @Inject constructor(val sampleRepository: SampleInteractor) : ViewDataProvider(), SampleDataProvider {
-
+class ArmorDataProviderImpl @Inject constructor(
+    private val armorInteractor: GetArmorInteractor,
+    private val exceptionMapper: ExceptionMessageMapper
+) : ViewDataProvider(), ArmorDataProvider {
     private var disposable: CompositeDisposable = CompositeDisposable()
-
     private val retrySubject = PublishSubject.create<Unit>()
 
     override val data =
         retrySubject
             .startWith(Unit)
-            .switchMap {
-                sampleRepository.fetchSampleData()
-                    .toObservable()
-            }
+            .switchMap { Observable.concat(Observable.just(Resource.Loading()), mappedArmorSets) }
             .replay(1)
-            .autoConnect(1) {
-                disposable += it
+            .autoConnect(1) { disposable += it }
+
+    private val mappedArmorSets
+        get() = armorInteractor.getArmor()
+            .map { res ->
+                res.associateBy(
+                    { ArmorItem.SetViewModel(it.id, "${it.name} (${it.rank})") },
+                    { armor ->
+                        armor.pieces.map {
+                            ArmorItem.ArmorViewModel(it.id, it.name, it.image, it.type)
+                        }
+                    })
             }
+            .compose(ResourceTransformer.fromSingle(exceptionMapper))
+            .toObservable()
 
     override fun retry() {
         retrySubject.onNext(Unit)
@@ -207,25 +224,139 @@ For better performance and control of what happens we usually avoid having our V
 
 It is also fine to use `LiveData` to forward data to the UI, but keep in mind that this also leads to less control over what happens when.
 
+Note, that ViewModels usually don't know anything about the UI itself (so they don't have references to Views etc.). Use data binding instead and provide only View *data* to the ViewModel (e.g. by using the generated binding in the Fragment, writing binding adapters should only rarely be necessary then).
+
 *Contrary to the Android ViewModel, our ViewModel can easily have access to the Fragment or Activity context, just inject it and don't worry about leaks.*
 
-**TODO: add sample ViewModel**
+```kotlin
+class ArmorsViewModel @Inject constructor(private val dataProvider: ArmorDataProvider) : ViewModel {
+    private val navigation = PublishSubject.create<NavigationTarget>()
+    val navigator = navigation.firstElement()!!
+
+    val items =
+        dataProvider.data
+            .filter { it.data != null }
+            .map { it.data!! }
+            .observeOn(AndroidSchedulers.mainThread())!!
+
+    fun retry() {
+        dataProvider.retry()
+    }
+
+    val status = dataProvider.data
+        .compose(ResourceStatusTransformer.fromObservable())
+        .observeOn(AndroidSchedulers.mainThread())!!
+}
+```
 
 The last part of the chain is the Fragment that injects the ViewModel. This is likely the most boring part.
 
 The Fragment subscribes to the data stream provided by the ViewModel (usually in `onCreate()`). If the Fragment hosts a RecyclerView it might then forward the data to the Adapter once it arrives.
 
-** TODO: add sample Fragment**
+```kotlin
+class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
+
+    @Inject
+    internal lateinit var viewModelFactory: ViewModelFactory<ArmorsViewModel>
+    private var viewModel: ArmorsViewModel? = null
+    @Inject
+    internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
+    @Inject
+    internal lateinit var dataBindingComponent: DataBindingComponent
+    private var binding: FragmentArmorBinding? = null
+    private var rcvAdapter: ArmorsAdapter? = null
+
+    override fun supportFragmentInjector() = androidInjector
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
+        super.onCreate(savedInstanceState)
+        viewModel = viewModelFactory.create(ArmorsViewModel::class.java)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+        FragmentArmorBinding.inflate(inflater, container, false, dataBindingComponent)
+            .apply {
+                binding = this
+                retryCallback = View.OnClickListener { viewModel?.retry() }
+            }.root
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.requestApplyInsets()
+        binding?.apply {
+            rcv.apply {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(context)
+            }
+            lifecycleOwner = viewLifecycleOwner
+        }
+        rcvAdapter = ArmorsAdapter(LayoutInflater.from(context), dataBindingComponent) { viewModel?.itemClicked(it) }
+        viewModel?.apply {
+            items.subscribeBy(viewLifecycleOwner, onNext = {
+                binding?.rcv?.apply {
+                    rcvAdapter?.apply {
+                        if (adapter == null) {
+                            adapter = this
+                        }
+                        submitList(it)
+                    }
+                }
+            })
+            status.subscribeBy(viewLifecycleOwner, onNext = {
+                binding?.status = it
+            })
+            navigator.subscribeBy(
+                viewLifecycleOwner,
+                onSuccess = { findNavController().navigate(it.navDirections, it.navOptions) })
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel?.destroy()
+    }
+}
+```
 
 ## A word on `Resource`s
 
-The Resource class is a sealed class wrapping objects returned by asynchronous operations (usually in streams). We use it from the Data layer all the way up to the View layer, so make sure to always wrap your data objects in Resources when modifying stream data. Various transformers the core library will help you with that.
+The Resource class is a sealed class wrapping objects returned by asynchronous operations (usually in streams). We use it within the View layer to ease status handling (there also is a pure `ResourceStatus` class which only propagates status without any data), so make sure to always wrap your data objects in Resources first thing when preparing stream data in a ViewDataProvider. Various transformers in the core library will help you with mapping RxJava data streams into RxJava Resource/ResourceStatus streams (check out the `ResourceTransformer`/`ResourceStatusTransformer` object classes for details).
 
-A Resource can have three states: Success, Failed and Loading. Depending on the state the Resource will contain the data itself (Success), a Throwable and optionally data (Failed, the data might originate from merged sources) or no data (Loading).
+A Resource can have three states: Success, Failed and Loading. Depending on the state the Resource will contain the data itself (**Success**), a message and an optionally a Throwable and data (**Failed**, the data might originate from other merged sources) or no data (**Loading**).
 
-The sealed class concept will help you to easily react to state changes in any given layer.
+The sealed class concept will help you to easily react to state changes in your UI.
 
-**TODO: add Resource listening sample**
+Usually your ViewModel will split the Resource data stream coming from the Interactors into two streams: a pure data stream and a ResourceStatus stream. This makes reacting on changes in your UI even simpler.
+
+```kotlin
+val items =
+    dataProvider.data
+        .filter { it.data != null }
+        .map { it.data!! }
+        .observeOn(AndroidSchedulers.mainThread())!!
+
+val status = dataProvider.data
+    .compose(ResourceStatusTransformer.fromObservable())
+    .observeOn(AndroidSchedulers.mainThread())!!
+```
+
+State and Resource listening can happen in either your XML or in the Fragment. A Fragment might do the following in `onViewCreated()`:
+
+```kotlin
+viewModel.items.subscribeBy(viewLifecycleOwner, onNext = {
+    binding?.rcv?.apply {
+        rcvAdapter?.apply {
+            if (adapter == null) {
+                adapter = this
+            }
+            submitList(it)
+        }
+    }
+})
+viewModel.status.subscribeBy(viewLifecycleOwner, onNext = {
+    binding?.status = it
+})
+```
 
 ## Contribute
 

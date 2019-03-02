@@ -19,9 +19,16 @@
  * SOFTWARE.
  */
 
-package io.stanwood.mhwdb.repository.mhw
+package io.stanwood.mhwdb.databinding
 
-import io.stanwood.mhwdb.datasource.net.mhw.MhwArmorSetInfo
+import androidx.core.widget.ContentLoadingProgressBar
+import androidx.databinding.BindingAdapter
 
-fun MhwArmorSetInfo.mapToArmorSet(armor: List<Armor>) =
-    ArmorSet(this.id, this.name, this.rank, armor)
+@BindingAdapter("isLoading")
+fun setLoading(view: ContentLoadingProgressBar, loading: Boolean?) {
+    if (loading == true) {
+        view.show()
+    } else {
+        view.hide()
+    }
+}

@@ -28,42 +28,43 @@ import io.reactivex.Single
 import io.reactivex.SingleSource
 import io.reactivex.SingleTransformer
 import io.stanwood.framework.arch.core.Resource
+import timber.log.Timber
 
 object ResourceTransformer {
-    fun <T, R> fromObservable(
-        transform: (T) -> R,
-        resumeInCaseOfError: ((Throwable) -> Observable<T>)? = null
-    ): ObservableTransformer<T, Resource<R>> =
-        ObservableResourceTransformer(transform, resumeInCaseOfError)
 
-    fun <T, R> fromSingle(
-        transform: (T) -> R,
-        resumeInCaseOfError: ((Throwable) -> Single<T>)? = null
-    ): SingleTransformer<T, Resource<R>> =
-        SingleResourceTransformer(transform, resumeInCaseOfError)
+    private val defaultErrorTransformer: ((Throwable) -> String) = { it.message ?: "unknown error" }
+    fun <T> fromObservable(
+        transform: ((Throwable) -> String) = defaultErrorTransformer
+    ): ObservableTransformer<T, Resource<T>> = ObservableResourceTransformer(transform)
 
-    private class ObservableResourceTransformer<T, R>(
-        private inline val transform: (T) -> R,
-        private inline val resumeInCaseOfError: ((Throwable) -> Observable<T>)? = null
-    ) : ObservableTransformer<T, Resource<R>> {
-        override fun apply(upstream: Observable<T>): ObservableSource<Resource<R>> =
-            (resumeInCaseOfError?.let { upstream.onErrorResumeNext(it) } ?: upstream)
-                .map { createSuccess(transform, it) }
-                .onErrorReturn { createFailed(it) }
+    fun <T> fromSingle(
+        transform: ((Throwable) -> String) = defaultErrorTransformer
+    ): SingleTransformer<T, Resource<T>> =
+        SingleResourceTransformer(transform)
+
+    private fun <T> createSuccess(source: T): Resource<T> =
+        Resource.Success(source)
+
+    private fun <T> createFailed(throwable: Throwable, exceptionMap: ((Throwable)) -> String): Resource<T> {
+        Timber.e(throwable)
+        return Resource.Failed(exceptionMap.invoke(throwable), throwable)
     }
 
-    private class SingleResourceTransformer<T, R>(
-        private inline val transform: (T) -> R,
-        private inline val resumeInCaseOfError: ((Throwable) -> Single<T>)? = null
-    ) : SingleTransformer<T, Resource<R>> {
-        override fun apply(upstream: Single<T>): SingleSource<Resource<R>> =
-            (resumeInCaseOfError?.let { upstream.onErrorResumeNext(it) } ?: upstream)
-                .map { createSuccess(transform, it) }
-                .onErrorReturn { createFailed(it) }
+    private class ObservableResourceTransformer<T>(
+        private inline val exceptionMap: ((Throwable)) -> String
+    ) : ObservableTransformer<T, Resource<T>> {
+        override fun apply(upstream: Observable<T>): ObservableSource<Resource<T>> =
+            upstream
+                .map { createSuccess(it) }
+                .onErrorReturn { createFailed(it, exceptionMap) }
     }
 
-    private fun <T, R> createSuccess(transform: (T) -> R, source: T) =
-        Resource.Success(transform.invoke(source)) as (Resource<R>)
-
-    private fun <R> createFailed(throwable: Throwable) = Resource.Failed<R>(throwable) as Resource<R>
+    private class SingleResourceTransformer<T>(
+        private inline val exceptionMap: ((Throwable)) -> String
+    ) : SingleTransformer<T, Resource<T>> {
+        override fun apply(upstream: Single<T>): SingleSource<Resource<T>> =
+            upstream
+                .map { createSuccess(it) }
+                .onErrorReturn { createFailed(it, exceptionMap) }
+    }
 }

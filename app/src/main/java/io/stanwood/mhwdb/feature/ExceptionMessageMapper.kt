@@ -19,9 +19,21 @@
  * SOFTWARE.
  */
 
-package io.stanwood.mhwdb.repository.mhw
+package io.stanwood.mhwdb.feature
 
-import io.stanwood.mhwdb.datasource.net.mhw.MhwArmorSetInfo
+import android.content.Context
+import io.stanwood.framework.network.util.NoConnectivityException
+import io.stanwood.mhwdb.R
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
-fun MhwArmorSetInfo.mapToArmorSet(armor: List<Armor>) =
-    ArmorSet(this.id, this.name, this.rank, armor)
+class ExceptionMessageMapper(val context: Context) : (Throwable) -> String {
+    override fun invoke(throwable: Throwable): String =
+        context.resources.let {
+            when (throwable) {
+                is HttpException -> it.getString(R.string.error_response, throwable.code())
+                is NoConnectivityException, is SocketTimeoutException -> it.getString(R.string.error_no_connection)
+                else -> it.getString(R.string.error_unknown)
+            }
+        }
+}

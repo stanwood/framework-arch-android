@@ -38,7 +38,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         stage {
-            matchingFallbacks = ['release', 'debug']
+            matchingFallbacks = ['debug']
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -53,16 +53,14 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'androidx.core:core-ktx:1.1.0-alpha04'
-    implementation 'com.github.stanwood.framework-arch-android:di:0.3.0'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    implementation 'com.github.stanwood.framework-arch-android:nav:0.3.0'
-    implementation 'com.github.stanwood.framework-core-android:ui:0.2'
+    implementation 'com.github.stanwood.framework-core-android:ui:4d8b29d5b5fd1f1d07ba338e52992ec60629adb7'
     implementation 'com.github.stanwood.framework-core-android:databinding:0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
@@ -76,6 +74,8 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.21'
     kapt 'com.google.dagger:dagger-android-processor:2.21'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
+    implementation project(':di')
+    implementation project(':nav')
 }
 
 kapt {

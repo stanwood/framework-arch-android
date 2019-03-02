@@ -12,7 +12,6 @@ import dagger.android.support.HasSupportFragmentInjector
 import io.stanwood.mhwdb.R
 import javax.inject.Inject
 
-
 class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject

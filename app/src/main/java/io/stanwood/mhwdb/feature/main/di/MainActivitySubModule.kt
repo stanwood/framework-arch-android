@@ -12,6 +12,4 @@ class MainActivitySubModule {
     @Provides
     internal fun provideMainNavController(activity: MainActivity) =
         activity.findNavController(R.id.nav_host_fragment)
-
-
 }

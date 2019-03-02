@@ -7,8 +7,6 @@ import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
 import io.reactivex.Single
-import io.stanwood.framework.arch.core.Resource
-import io.stanwood.framework.arch.core.rx.ResourceTransformer
 import io.stanwood.framework.network.store.SerializationParserFactory
 import io.stanwood.mhwdb.datasource.net.mhw.MhwApi
 import io.stanwood.mhwdb.datasource.net.mhw.MhwArmor
@@ -44,36 +42,35 @@ class MhwRepository @Inject constructor(private val api: MhwApi, fileSystem: Fil
             .open()
     }
 
-    fun fetchWeaponByType(weaponTypeId: String): Single<Resource<List<Weapon>>> =
+    fun fetchWeaponByType(weaponTypeId: String): Single<List<Weapon>> =
         weaponStore.get(allWeapon)
-            .compose(ResourceTransformer.fromSingle({ src -> src.filter { it.type == weaponTypeId }.map { it.mapToWeapon() } }))
+            .map { src -> src.filter { it.type == weaponTypeId }.map { it.mapToWeapon() } }
 
-    fun fetchWeaponTypes(): Single<Resource<List<WeaponType>>> =
+    fun fetchWeaponTypes(): Single<List<WeaponType>> =
         weaponStore.get(allWeapon)
-            .compose(ResourceTransformer.fromSingle({ src -> src.distinctBy { it.type }.map { it.mapToWeaponType() } }))
+            .map { src ->
+                src.distinctBy { it.type }.map { it.mapToWeaponType() }
+            }
 
-    fun fetchArmorSets(): Single<Resource<List<ArmorSet>>> =
-        armorStore.get(allArmor)
-            .compose(ResourceTransformer.fromSingle({ src ->
-                src.distinctBy { it.armorSet?.id ?: it.id }
-                    .map { armor ->
-                        armor.armorSet?.pieces
-                            ?.mapNotNull { id ->
-                                src.find { it.id == id }?.mapToArmor()
-                            }?.let {
-                                armor.armorSet.mapToArmorSet(it)
-                            }
-                            ?: ArmorSet(armor.id, armor.name, armor.rank, listOf(armor.mapToArmor()))
-                    }
-            }))
+    fun fetchArmorSets(): Single<List<ArmorSet>> =
+        armorStore.get(allArmor).map { src ->
+            src.distinctBy { it.armorSet?.id ?: it.id }
+                .map { armor ->
+                    armor.armorSet?.pieces
+                        ?.mapNotNull { id ->
+                            src.find { it.id == id }?.mapToArmor()
+                        }?.let {
+                            armor.armorSet.mapToArmorSet(it)
+                        }
+                        ?: ArmorSet(armor.id, armor.name, armor.rank, listOf(armor.mapToArmor()))
+                }
+        }
 
-    fun fetchArmorById(id: Long): Single<Resource<Armor>> =
-        armorStore.get(allArmor)
-            .compose(ResourceTransformer.fromSingle({ src ->
-                src.first { it.id == id }
-                    .mapToArmor()
-            }))
-
+    fun fetchArmorById(id: Long): Single<Armor> =
+        armorStore.get(allArmor).map { src ->
+            src.first { it.id == id }
+                .mapToArmor()
+        }
 
     private fun <T> Parser<BufferedSource, T>.fetchFrom(fetcher: (BarCode) -> Single<BufferedSource>) =
         StoreBuilder.parsedWithKey<BarCode, BufferedSource, T>()

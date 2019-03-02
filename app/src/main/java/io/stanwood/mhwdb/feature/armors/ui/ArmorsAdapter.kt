@@ -32,7 +32,6 @@ class ArmorsAdapter(
                 oldItem.imageUrl == newItem.imageUrl
         }) {
 
-
     override fun getItemViewType(position: Int): Int {
         return getItem(position).viewType
     }
@@ -57,7 +56,6 @@ class ArmorsAdapter(
                     }
                 })
         }
-
 
     override fun onBindViewHolder(holder: BindingViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty() || payloads.any { it == true }) {
