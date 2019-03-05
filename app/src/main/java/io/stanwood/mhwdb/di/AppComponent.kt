@@ -5,7 +5,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
 import io.stanwood.mhwdb.StanwoodApp
-import io.stanwood.mhwdb.datasource.NetworkModule
+import io.stanwood.mhwdb.datasource.local.LocalModule
+import io.stanwood.mhwdb.datasource.net.NetworkModule
 import javax.inject.Singleton
 
 @Singleton
@@ -14,7 +15,8 @@ import javax.inject.Singleton
         AppModule::class,
         AndroidSupportInjectionModule::class,
         ActivityBuilderModule::class,
-        NetworkModule::class
+        NetworkModule::class,
+        LocalModule::class
     ]
 )
 interface AppComponent {

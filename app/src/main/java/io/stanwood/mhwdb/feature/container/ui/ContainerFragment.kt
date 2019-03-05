@@ -21,7 +21,7 @@ class ContainerFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<ContainerViewModel>
-    private var viewModel: ContainerViewModel? = null
+    private lateinit var viewModel: ContainerViewModel
     @Inject
     internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
 
@@ -50,14 +50,13 @@ class ContainerFragment : Fragment(), HasSupportFragmentInjector {
             }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.requestApplyInsets()
         binding?.lifecycleOwner = viewLifecycleOwner
         binding?.setNavSelectedListener { menuItem ->
             binding?.bottomNav?.selectedItemId?.let {
-                viewModel?.selectMenuItem(menuItem.itemId, it)
+                viewModel.selectMenuItem(menuItem.itemId, it)
             } ?: false
         }
-        viewModel?.apply {
+        viewModel.apply {
             navigator.subscribeBy(viewLifecycleOwner, onNext = {
                 childNavController?.navigate(it.navDirections, it.navOptions)
             })
@@ -66,6 +65,6 @@ class ContainerFragment : Fragment(), HasSupportFragmentInjector {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel?.destroy()
+        viewModel.destroy()
     }
 }

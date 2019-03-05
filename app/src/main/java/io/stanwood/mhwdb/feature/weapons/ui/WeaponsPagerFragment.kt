@@ -18,7 +18,7 @@ class WeaponsPagerFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<WeaponsPagerViewModel>
-    private var viewModel: WeaponsPagerViewModel? = null
+    private lateinit var viewModel: WeaponsPagerViewModel
     @Inject
     internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
 
@@ -38,15 +38,14 @@ class WeaponsPagerFragment : Fragment(), HasSupportFragmentInjector {
         FragmentWeaponsPagerBinding.inflate(inflater, container, false)
             .apply {
                 binding = this
-                retryCallback = View.OnClickListener { viewModel?.retry() }
+                retryCallback = View.OnClickListener { viewModel.retry() }
             }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.requestApplyInsets()
         binding?.apply {
             lifecycleOwner = viewLifecycleOwner
         }
-        viewModel?.apply {
+        viewModel.apply {
             items.subscribeBy(viewLifecycleOwner, onNext = {
                 it?.also { items ->
                     binding?.apply {
@@ -64,6 +63,6 @@ class WeaponsPagerFragment : Fragment(), HasSupportFragmentInjector {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel?.destroy()
+        viewModel.destroy()
     }
 }

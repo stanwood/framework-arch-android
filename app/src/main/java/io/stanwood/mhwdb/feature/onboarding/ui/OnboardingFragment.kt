@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
+import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
 import io.stanwood.framework.ui.extensions.setApplyWindowInsetsToChild
 import io.stanwood.mhwdb.databinding.FragmentOnboardingBinding
@@ -20,7 +21,7 @@ class OnboardingFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<OnboardingViewModel>
-    private var viewModel: OnboardingViewModel? = null
+    private lateinit var viewModel: OnboardingViewModel
     @Inject
     internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
     @Inject
@@ -35,11 +36,7 @@ class OnboardingFragment : Fragment(), HasSupportFragmentInjector {
         viewModel = viewModelFactory.create(OnboardingViewModel::class.java)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ) =
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
         FragmentOnboardingBinding.inflate(inflater, container, false, dataBindingComponent)
             .apply {
                 binding = this
@@ -47,15 +44,17 @@ class OnboardingFragment : Fragment(), HasSupportFragmentInjector {
             }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.requestApplyInsets()
-        binding?.lifecycleOwner = viewLifecycleOwner
-        binding?.btnContinue?.setOnClickListener {
-            findNavController().navigate(OnboardingFragmentDirections.actionOnboardingFragmentToContainerFragment())
+        viewModel.apply {
+            binding?.also { bind ->
+                bind.lifecycleOwner = viewLifecycleOwner
+                bind.btnContinue.setOnClickListener { viewModel.nextPage() }
+                navigator.subscribeBy(viewLifecycleOwner, onNext = { findNavController().navigate(it.navDirections, it.navOptions) })
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel?.destroy()
+        viewModel.destroy()
     }
 }
