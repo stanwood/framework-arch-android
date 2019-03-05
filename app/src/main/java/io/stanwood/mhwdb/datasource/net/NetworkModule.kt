@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-package io.stanwood.mhwdb.datasource
+package io.stanwood.mhwdb.datasource.net
 
 import android.app.Application
 import com.nytimes.android.external.fs3.filesystem.FileSystem
@@ -41,10 +41,11 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
-class NetworkModule {
+object NetworkModule {
 
     @Provides
     @Singleton
+    @JvmStatic
     internal fun provideHttpClient(context: Application) =
         OkHttpClient.Builder().apply {
             addInterceptor(ConnectivityInterceptor(context))
@@ -62,6 +63,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @JvmStatic
     internal fun provideRetrofit(httpClient: OkHttpClient) =
         Retrofit.Builder().client(httpClient).baseUrl("https://mhw-db.com/")
             .addConverterFactory(BufferedSourceConverterFactory.create())
@@ -70,10 +72,12 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @JvmStatic
     internal fun provideMhwApi(retrofit: Retrofit) = retrofit.create(MhwApi::class.java)
 
     @Provides
     @Singleton
+    @JvmStatic
     fun provideFileSystem(context: Application): FileSystem =
         FileSystemFactory.create(File(context.noBackupFilesDir, "store"))
 }

@@ -30,7 +30,7 @@ class WeaponsFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<WeaponsViewModel>
-    private var viewModel: WeaponsViewModel? = null
+    private lateinit var viewModel: WeaponsViewModel
     @Inject
     internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
     @Inject
@@ -57,7 +57,6 @@ class WeaponsFragment : Fragment(), HasSupportFragmentInjector {
             }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.requestApplyInsets()
         binding?.apply {
             rcv.apply {
                 setHasFixedSize(true)
@@ -65,8 +64,8 @@ class WeaponsFragment : Fragment(), HasSupportFragmentInjector {
             }
             lifecycleOwner = viewLifecycleOwner
         }
-        rcvAdapter = WeaponsAdapter(LayoutInflater.from(context), dataBindingComponent) { viewModel?.itemClicked(it) }
-        viewModel?.apply {
+        rcvAdapter = WeaponsAdapter(LayoutInflater.from(context), dataBindingComponent) { viewModel.itemClicked(it) }
+        viewModel.apply {
             items.subscribeBy(viewLifecycleOwner, onNext = {
                 binding?.rcv?.apply {
                     rcvAdapter?.apply {
@@ -83,6 +82,6 @@ class WeaponsFragment : Fragment(), HasSupportFragmentInjector {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel?.destroy()
+        viewModel.destroy()
     }
 }

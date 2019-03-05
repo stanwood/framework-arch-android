@@ -19,31 +19,19 @@
  * SOFTWARE.
  */
 
-package io.stanwood.mhwdb.feature.armors.vm
+package io.stanwood.mhwdb.datasource.local.user
 
-import androidx.databinding.BaseObservable
-import androidx.databinding.Bindable
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import io.reactivex.Single
 
-sealed class ArmorItem(val id: Long, val title: String, val viewType: Int, val imageUrl: String? = null) : BaseObservable() {
-    var selected: Boolean = false
-        @Bindable get
-        set(value) {
-            if (field != value) {
-                field = value
-                notifyChange()
-            }
-        }
+@Dao
+interface UserDao {
+    @Query("SELECT * FROM user LIMIT 1")
+    fun getUser(): Single<LocalUser>
 
-    class ArmorViewModel(id: Long, title: String, imageUrl: String? = null, val subtitle: String) :
-        ArmorItem(id, title, VIEW_TYPE, imageUrl) {
-        companion object {
-            const val VIEW_TYPE = 1
-        }
-    }
-
-    class SetViewModel(id: Long, title: String) : ArmorItem(id, title, VIEW_TYPE) {
-        companion object {
-            const val VIEW_TYPE = 2
-        }
-    }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUser(user: LocalUser)
 }

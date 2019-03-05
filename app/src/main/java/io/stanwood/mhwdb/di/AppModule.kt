@@ -7,8 +7,9 @@ import io.stanwood.mhwdb.feature.ExceptionMessageMapper
 import javax.inject.Singleton
 
 @Module
-class AppModule {
+object AppModule {
     @Singleton
     @Provides
+    @JvmStatic
     internal fun provideExceptionMapper(context: Application) = ExceptionMessageMapper(context)
 }

@@ -42,7 +42,7 @@ class ArmorDetailsFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<ArmorDetailsViewModel>
-    private var viewModel: ArmorDetailsViewModel? = null
+    private lateinit var viewModel: ArmorDetailsViewModel
     @Inject
     internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
     @Inject
@@ -68,7 +68,6 @@ class ArmorDetailsFragment : Fragment(), HasSupportFragmentInjector {
             }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.requestApplyInsets()
         binding?.apply {
             rcv.apply {
                 setHasFixedSize(true)
@@ -78,7 +77,7 @@ class ArmorDetailsFragment : Fragment(), HasSupportFragmentInjector {
             lifecycleOwner = viewLifecycleOwner
         }
         rcvAdapter = ArmorDetailsAdapter(LayoutInflater.from(context), dataBindingComponent)
-        viewModel?.apply {
+        viewModel.apply {
             items.subscribeBy(viewLifecycleOwner, onNext = {
                 binding?.rcv?.apply {
                     rcvAdapter?.apply {
@@ -98,6 +97,6 @@ class ArmorDetailsFragment : Fragment(), HasSupportFragmentInjector {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel?.destroy()
+        viewModel.destroy()
     }
 }

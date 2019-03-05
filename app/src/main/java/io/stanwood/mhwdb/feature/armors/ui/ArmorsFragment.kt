@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingComponent
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -43,7 +44,7 @@ class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<ArmorsViewModel>
-    private var viewModel: ArmorsViewModel? = null
+    private lateinit var viewModel: ArmorsViewModel
     @Inject
     internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
     @Inject
@@ -70,21 +71,22 @@ class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
         FragmentArmorBinding.inflate(inflater, container, false, dataBindingComponent)
             .apply {
                 binding = this
-                retryCallback = View.OnClickListener { viewModel?.retry() }
+                retryCallback = View.OnClickListener { viewModel.retry() }
             }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.requestApplyInsets()
         binding?.apply {
             rcv.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context)
-                addItemDecoration(ArmorItemDivider(resources.getDrawable(R.drawable.armor_item_divider)))
+                ResourcesCompat.getDrawable(resources, R.drawable.armor_item_divider, null)?.apply {
+                    addItemDecoration(ArmorItemDivider(this))
+                }
             }
             lifecycleOwner = viewLifecycleOwner
         }
-        rcvAdapter = ArmorsAdapter(LayoutInflater.from(context), dataBindingComponent) { viewModel?.itemClicked(it) }
-        viewModel?.apply {
+        rcvAdapter = ArmorsAdapter(LayoutInflater.from(context), dataBindingComponent) { viewModel.itemClicked(it) }
+        viewModel.apply {
             items.subscribeBy(viewLifecycleOwner, onNext = {
                 binding?.rcv?.apply {
                     rcvAdapter?.apply {
@@ -106,14 +108,14 @@ class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        viewModel?.apply {
+        viewModel.apply {
             outState.putLongArray(KEY_EXPANDED_SETS, expandedSets.toLongArray())
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel?.destroy()
+        viewModel.destroy()
     }
 
     companion object {

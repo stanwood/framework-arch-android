@@ -9,9 +9,10 @@ import io.stanwood.mhwdb.feature.weapons.dataprovider.WeaponsPagerDataProviderIm
 import io.stanwood.mhwdb.feature.weapons.ui.WeaponsPagerFragment
 
 @Module
-class WeaponsPagerFragmentSubModule {
+object WeaponsPagerFragmentSubModule {
 
     @Provides
+    @JvmStatic
     internal fun provideWeaponsPagerDataProvider(
         fragment: WeaponsPagerFragment,
         dataProviderFactory: ViewDataProviderFactory<WeaponsPagerDataProviderImpl>

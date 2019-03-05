@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph_main"
-    app:startDestination="@id/containerFragment">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/nav_graph_main">
 
     <fragment
-        android:id="@+id/containerFragment"
-        android:name="io.stanwood.mhwdb.feature.container.ui.ContainerFragment" />
+            android:id="@+id/containerFragment"
+            android:name="io.stanwood.mhwdb.feature.container.ui.ContainerFragment"/>
     <fragment
-        android:id="@+id/armorDetailsFragment"
-        android:name="io.stanwood.mhwdb.feature.armors.ui.ArmorDetailsFragment">
+            android:id="@+id/armorDetailsFragment"
+            android:name="io.stanwood.mhwdb.feature.armors.ui.ArmorDetailsFragment">
         <argument
-            android:name="armorId"
-            app:argType="java.lang.Long"
-            app:nullable="false" />
+                android:name="armorId"
+                app:argType="java.lang.Long"
+                app:nullable="false"/>
 
     </fragment>
 
     <action
-        android:id="@+id/showArmorDetails"
-        app:destination="@id/armorDetailsFragment" />
-    <fragment
-        android:id="@+id/onboardingFragment"
-        android:name="io.stanwood.mhwdb.feature.onboarding.ui.OnboardingFragment"
-        android:label="OnboardingFragment">
+            android:id="@+id/showArmorDetails"
+            app:destination="@id/armorDetailsFragment"/>
+    <navigation
+            android:id="@+id/nav_graph_onboarding"
+            app:startDestination="@id/onboardingFragment">
+        <fragment
+                android:id="@+id/onboardingFragment"
+                android:name="io.stanwood.mhwdb.feature.onboarding.ui.OnboardingFragment"
+                android:label="OnboardingFragment"/>
         <action
-            android:id="@+id/action_onboardingFragment_to_containerFragment"
-            app:destination="@id/containerFragment"
-            app:popUpTo="@id/nav_graph_main"
-            app:popUpToInclusive="true" />
-    </fragment>
+                android:id="@+id/action_to_containerFragment"
+                app:destination="@id/containerFragment"
+                app:popUpTo="@id/nav_graph_main"
+                app:popUpToInclusive="true"/>
+    </navigation>
 </navigation>

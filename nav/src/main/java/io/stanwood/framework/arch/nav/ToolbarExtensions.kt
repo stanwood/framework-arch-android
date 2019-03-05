@@ -23,12 +23,13 @@ package io.stanwood.framework.arch.nav
 
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 
 fun Toolbar.addNavigateUp(fm: FragmentManager, @DrawableRes drawable: Int = R.drawable.ic_arrow_back_white_24dp) {
     if (fm.backStackEntryCount > 0) {
-        navigationIcon = resources.getDrawable(drawable)
+        navigationIcon = ResourcesCompat.getDrawable(resources, drawable, null)
         setNavigationOnClickListener { findNavController().navigateUp() }
     }
 }
