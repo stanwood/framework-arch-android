@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:startDestination="@id/armorFragment"
+            android:id="@+id/nav_graph_container">
+
+    <action android:id="@+id/showWeapons" app:destination="@id/weaponsPagerFragment" app:popUpTo="@id/nav_graph_container"
+            app:popUpToInclusive="true"/>
+
+    <fragment
+            android:id="@+id/weaponsPagerFragment"
+            android:name="io.stanwood.mhwdb.feature.weapons.ui.WeaponsPagerFragment"
+            android:label="WeaponsPagerFragment"/>
+
+    <action android:id="@+id/showArmor" app:destination="@id/armorFragment" app:popUpTo="@id/nav_graph_container"
+            app:popUpToInclusive="true"/>
+    <fragment
+            android:id="@+id/armorFragment"
+            android:name="io.stanwood.mhwdb.feature.armors.ui.ArmorsFragment"/>
+
+</navigation>

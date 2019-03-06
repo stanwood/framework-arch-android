@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="io.stanwood.mhwdb.feature.weapons.vm.WeaponsItemViewModel" />
+
+        <variable
+            name="imageUrl"
+            type="java.lang.String" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_weapon_item"
+        android:elevation="2dp"
+        android:padding="@dimen/padding_half"
+        android:layout_margin="2dp">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/title"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@{imageUrl}"
+            tools:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_item_padding"
+            android:paddingStart="@dimen/list_item_padding"
+            android:paddingEnd="@dimen/list_item_padding"
+            android:gravity="center"
+            android:text="@{vm.title}"
+            android:lines="2"
+            android:textAppearance="@style/TextAppearance.App.Title"
+            app:layout_constraintBottom_toTopOf="@id/subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image"
+            tools:text="Title" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

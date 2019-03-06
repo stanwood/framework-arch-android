@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MhwDb</string>
+    <string name="container_first_title">Armors</string>
+    <string name="container_second_title">Weapons</string>
+    <string name="container_third_title">third</string>
+    <string name="weapons_title">Weapons</string>
+    <string name="armor_title">Armors</string>
+    <string name="error_no_connection">Keine Internetverbindung!</string>
+    <string name="error_unknown">Unbekannter Fehler</string>
+    <string name="error_response">Vorübergehender Serverfehler\nBitte versuche es später erneut.\nCode(%1$d)</string>
+</resources>

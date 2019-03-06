@@ -11,8 +11,9 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
+import timber.log.Timber
 
-private val onErrorStub: (Throwable) -> Unit = { it.printStackTrace() }
+private val onErrorStub: (Throwable) -> Unit = { Timber.e(it) }
 private val onCompleteStub: () -> Unit = {}
 
 /**
