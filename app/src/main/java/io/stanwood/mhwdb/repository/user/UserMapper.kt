@@ -24,4 +24,3 @@ package io.stanwood.mhwdb.repository.user
 import io.stanwood.mhwdb.datasource.local.user.LocalUser
 
 fun LocalUser.mapToUser() = User(this.id)
-
