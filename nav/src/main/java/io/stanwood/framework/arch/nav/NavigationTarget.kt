@@ -65,14 +65,14 @@ open class Destination(
     }
 }
 
-open class Back : NavigationTarget {
+class Back : NavigationTarget {
 
     override fun navigate(navController: NavController) {
         navController.popBackStack()
     }
 }
 
-open class Up : NavigationTarget {
+class Up : NavigationTarget {
 
     override fun navigate(navController: NavController) {
         navController.navigateUp()
