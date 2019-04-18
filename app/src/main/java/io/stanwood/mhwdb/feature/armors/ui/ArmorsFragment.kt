@@ -29,6 +29,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingComponent
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
@@ -72,6 +73,7 @@ class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
             .apply {
                 binding = this
                 retryCallback = View.OnClickListener { viewModel.retry() }
+                toWeaponsCallback = Navigation.createNavigateOnClickListener(R.id.showWeapons)
             }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
