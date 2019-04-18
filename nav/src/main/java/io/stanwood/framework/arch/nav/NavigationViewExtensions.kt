@@ -19,8 +19,17 @@
  * SOFTWARE.
  */
 
-package io.stanwood.mhwdb.repository.user
+package io.stanwood.framework.arch.nav
 
-import io.stanwood.mhwdb.datasource.local.user.LocalUser
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 
-fun LocalUser.mapToUser() = User(this.id)
+fun BottomNavigationView.syncWith(navController: NavController, lifecycle: Lifecycle) {
+    lifecycle.addObserver(NavigationViewSyncer(navController, this))
+}
+
+fun NavigationView.syncWith(navController: NavController, lifecycle: Lifecycle) {
+    lifecycle.addObserver(NavigationViewSyncer(navController, null, this))
+}
