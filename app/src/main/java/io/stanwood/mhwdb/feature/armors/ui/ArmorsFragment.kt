@@ -102,7 +102,7 @@ class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
             })
             navigator.subscribeBy(
                 viewLifecycleOwner,
-                onSuccess = { mainNavController.navigate(it.navDirections, it.navOptions) })
+                onSuccess = { it.navigate(mainNavController) })
         }
     }
 
