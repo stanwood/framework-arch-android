@@ -32,6 +32,7 @@ import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
+import io.stanwood.framework.arch.nav.syncWith
 import io.stanwood.framework.ui.extensions.setApplyWindowInsetsToChild
 import io.stanwood.mhwdb.R
 import io.stanwood.mhwdb.databinding.FragmentContainerBinding
@@ -68,6 +69,9 @@ class ContainerFragment : Fragment(), HasSupportFragmentInjector {
             .apply {
                 binding = this
                 root.setApplyWindowInsetsToChild()
+                childNavController?.let {
+                    binding?.bottomNav?.syncWith(it, lifecycle)
+                }
             }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

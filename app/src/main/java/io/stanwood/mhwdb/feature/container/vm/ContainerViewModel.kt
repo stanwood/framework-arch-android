@@ -39,9 +39,8 @@ class ContainerViewModel @Inject constructor() : ViewModel {
         if (id == currentSelectedId) {
             true
         } else when (id) {
-            R.id.action_armor -> NavGraphContainerDirections.showArmor()
-            R.id.action_weapon -> NavGraphContainerDirections.showWeapons()
-            R.id.thirdItem -> NavGraphContainerDirections.showArmor()
+            R.id.armorFragment -> NavGraphContainerDirections.showArmor()
+            R.id.weaponsPagerFragment -> NavGraphContainerDirections.showWeapons()
             else -> null
         }
             ?.let {
