@@ -38,9 +38,7 @@ class NavigationViewSyncer(
 
     val destinationChangedListener: (NavController, NavDestination, Bundle?) -> Unit = { _, destination, _ ->
         bottomNav?.also {
-            it.menu.findItem(destination.id)?.apply {
-                isChecked = true
-            }
+            it.selectedItemId = destination.id
         }
         navigationView?.also {
             it.menu.findItem(destination.id)?.apply {
