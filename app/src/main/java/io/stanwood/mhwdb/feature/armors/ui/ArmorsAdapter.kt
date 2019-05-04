@@ -3,11 +3,13 @@ package io.stanwood.mhwdb.feature.armors.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import io.stanwood.framework.databinding.recyclerview.BindingViewHolder
 import io.stanwood.mhwdb.BR
+import io.stanwood.mhwdb.R
 import io.stanwood.mhwdb.databinding.LayoutArmorItemBinding
 import io.stanwood.mhwdb.databinding.LayoutArmorSetItemBinding
 import io.stanwood.mhwdb.feature.armors.vm.ArmorItem
@@ -38,8 +40,11 @@ class ArmorsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            ArmorItem.ArmorViewModel.VIEW_TYPE -> DividerViewHolder(LayoutArmorItemBinding.inflate(
+
+            ArmorItem.ArmorViewModel.VIEW_TYPE -> DividerViewHolder(
+                DataBindingUtil.inflate<LayoutArmorItemBinding>(
                 inflater,
+                    R.layout.layout_armor_item,
                 parent,
                 false,
                 dataBindingComponent
@@ -49,7 +54,14 @@ class ArmorsAdapter(
                         this.vm?.apply { clickCallback.invoke(this) }
                     }
                 })
-            else -> BindingViewHolder(LayoutArmorSetItemBinding.inflate(inflater, parent, false, dataBindingComponent)
+            else -> BindingViewHolder(
+                DataBindingUtil.inflate<LayoutArmorSetItemBinding>(
+                    inflater,
+                    R.layout.layout_armor_set_item,
+                    parent,
+                    false,
+                    dataBindingComponent
+                )
                 .apply {
                     root.setOnClickListener {
                         this.vm?.apply { clickCallback.invoke(this) }

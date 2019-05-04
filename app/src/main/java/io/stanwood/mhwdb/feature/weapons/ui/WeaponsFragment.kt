@@ -26,6 +26,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -34,6 +35,7 @@ import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
+import io.stanwood.mhwdb.R
 import io.stanwood.mhwdb.databinding.FragmentWeaponsBinding
 import io.stanwood.mhwdb.feature.weapons.vm.WeaponsViewModel
 import javax.inject.Inject
@@ -72,7 +74,7 @@ class WeaponsFragment : Fragment(), HasSupportFragmentInjector {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        FragmentWeaponsBinding.inflate(inflater, container, false, dataBindingComponent)
+        DataBindingUtil.inflate<FragmentWeaponsBinding>(inflater, R.layout.fragment_weapons, container, false, dataBindingComponent)
             .apply {
                 binding = this
             }.root

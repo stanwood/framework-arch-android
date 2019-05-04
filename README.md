@@ -275,7 +275,7 @@ class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        FragmentArmorBinding.inflate(inflater, container, false, dataBindingComponent)
+        DataBindingUtil.inflate<FragmentArmorBinding>(inflater, R.layout.fragment_armor, container, false, dataBindingComponent)
             .apply {
                 binding = this
                 retryCallback = View.OnClickListener { viewModel?.retry() }

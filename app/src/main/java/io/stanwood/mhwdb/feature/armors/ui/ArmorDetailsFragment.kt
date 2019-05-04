@@ -26,6 +26,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.DispatchingAndroidInjector
@@ -34,6 +35,7 @@ import dagger.android.support.HasSupportFragmentInjector
 import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
 import io.stanwood.framework.arch.nav.addNavigateUp
+import io.stanwood.mhwdb.R
 import io.stanwood.mhwdb.databinding.FragmentArmorDetailsBinding
 import io.stanwood.mhwdb.feature.armors.vm.ArmorDetailsViewModel
 import javax.inject.Inject
@@ -62,7 +64,13 @@ class ArmorDetailsFragment : Fragment(), HasSupportFragmentInjector {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        FragmentArmorDetailsBinding.inflate(inflater, container, false, dataBindingComponent)
+        DataBindingUtil.inflate<FragmentArmorDetailsBinding>(
+            inflater,
+            R.layout.fragment_armor_details,
+            container,
+            false,
+            dataBindingComponent
+        )
             .apply {
                 binding = this
             }.root

@@ -3,10 +3,12 @@ package io.stanwood.mhwdb.feature.weapons.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import io.stanwood.framework.databinding.recyclerview.BindingViewHolder
 import io.stanwood.mhwdb.BR
+import io.stanwood.mhwdb.R
 import io.stanwood.mhwdb.databinding.LayoutWeaponsItemBinding
 import io.stanwood.mhwdb.feature.weapons.vm.WeaponsItemViewModel
 
@@ -37,17 +39,13 @@ class WeaponsAdapter(
         }) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        BindingViewHolder(LayoutWeaponsItemBinding.inflate(
-            inflater,
-            parent,
-            false,
-            dataBindingComponent
-        )
-            .apply {
-                root.setOnClickListener {
-                    this.vm?.apply { clickCallback.invoke(this) }
-                }
-            })
+        BindingViewHolder(
+            DataBindingUtil.inflate<LayoutWeaponsItemBinding>(inflater, R.layout.layout_weapons_item, parent, false, dataBindingComponent)
+                .apply {
+                    root.setOnClickListener {
+                        this.vm?.apply { clickCallback.invoke(this) }
+                    }
+                })
 
     override fun onBindViewHolder(
         holder: BindingViewHolder,

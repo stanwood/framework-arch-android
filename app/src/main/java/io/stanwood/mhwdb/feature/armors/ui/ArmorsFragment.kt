@@ -27,6 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -69,7 +70,7 @@ class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        FragmentArmorBinding.inflate(inflater, container, false, dataBindingComponent)
+        DataBindingUtil.inflate<FragmentArmorBinding>(inflater, R.layout.fragment_armor, container, false, dataBindingComponent)
             .apply {
                 binding = this
                 retryCallback = View.OnClickListener { viewModel.retry() }
