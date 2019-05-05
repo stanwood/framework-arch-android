@@ -43,17 +43,17 @@ class ArmorsAdapter(
 
             ArmorItem.ArmorViewModel.VIEW_TYPE -> DividerViewHolder(
                 DataBindingUtil.inflate<LayoutArmorItemBinding>(
-                inflater,
+                    inflater,
                     R.layout.layout_armor_item,
-                parent,
-                false,
-                dataBindingComponent
-            )
-                .apply {
-                    root.setOnClickListener {
-                        this.vm?.apply { clickCallback.invoke(this) }
-                    }
-                })
+                    parent,
+                    false,
+                    dataBindingComponent
+                )
+                    .apply {
+                        root.setOnClickListener {
+                            this.vm?.apply { clickCallback.invoke(this) }
+                        }
+                    })
             else -> BindingViewHolder(
                 DataBindingUtil.inflate<LayoutArmorSetItemBinding>(
                     inflater,
@@ -62,11 +62,11 @@ class ArmorsAdapter(
                     false,
                     dataBindingComponent
                 )
-                .apply {
-                    root.setOnClickListener {
-                        this.vm?.apply { clickCallback.invoke(this) }
-                    }
-                })
+                    .apply {
+                        root.setOnClickListener {
+                            this.vm?.apply { clickCallback.invoke(this) }
+                        }
+                    })
         }
 
     override fun onBindViewHolder(holder: BindingViewHolder, position: Int, payloads: MutableList<Any>) {
