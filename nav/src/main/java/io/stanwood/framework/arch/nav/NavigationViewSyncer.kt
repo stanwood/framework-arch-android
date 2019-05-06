@@ -36,15 +36,9 @@ class NavigationViewSyncer(
     val navigationView: NavigationView? = null
 ) : LifecycleObserver {
 
-    val destinationChangedListener: (NavController, NavDestination, Bundle?) -> Unit = { _, destination, _ ->
-        bottomNav?.also {
-            it.selectedItemId = destination.id
-        }
-        navigationView?.also {
-            it.menu.findItem(destination.id)?.apply {
-                isChecked = true
-            }
-        }
+    private val destinationChangedListener: (NavController, NavDestination, Bundle?) -> Unit = { _, destination, _ ->
+        bottomNav?.menu?.findItem(destination.id)?.isChecked = true
+        navigationView?.menu?.findItem(destination.id)?.isChecked = true
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
