@@ -21,6 +21,8 @@
 
 package io.stanwood.framework.arch.core.rx
 
+import io.reactivex.Flowable
+import io.reactivex.FlowableTransformer
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
@@ -29,6 +31,7 @@ import io.reactivex.SingleSource
 import io.reactivex.SingleTransformer
 import io.stanwood.framework.arch.core.Resource
 import io.stanwood.framework.arch.core.ResourceStatus
+import org.reactivestreams.Publisher
 
 object ResourceStatusTransformer {
 
@@ -38,12 +41,20 @@ object ResourceStatusTransformer {
     fun <T> fromSingle(): SingleTransformer<Resource<T>, ResourceStatus> =
         SingleResourceTransformer()
 
+    fun <T> fromFlowable(): FlowableTransformer<Resource<T>, ResourceStatus> =
+        FlowableResourceTransformer()
+
     private fun <T> toStatus(source: Resource<T>): ResourceStatus =
         source.data?.let { ResourceStatus.Success } ?: when (source) {
             is Resource.Failed -> ResourceStatus.Error(source.msg, source.cause)
             is Resource.Loading -> ResourceStatus.Loading
             else -> ResourceStatus.Success
         }
+
+    private class FlowableResourceTransformer<T> : FlowableTransformer<Resource<T>, ResourceStatus> {
+        override fun apply(upstream: Flowable<Resource<T>>): Publisher<ResourceStatus> =
+            upstream.map { toStatus(it) }
+    }
 
     private class ObservableResourceTransformer<T> : ObservableTransformer<Resource<T>, ResourceStatus> {
         override fun apply(upstream: Observable<Resource<T>>): ObservableSource<ResourceStatus> =
