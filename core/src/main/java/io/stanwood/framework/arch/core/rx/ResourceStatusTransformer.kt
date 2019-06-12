@@ -35,33 +35,33 @@ import org.reactivestreams.Publisher
 
 object ResourceStatusTransformer {
 
-    fun <T> fromObservable(succeedOnData: Boolean = true): ObservableTransformer<Resource<T>, ResourceStatus> =
-        ObservableResourceTransformer(succeedOnData)
+    fun <T> fromObservable(): ObservableTransformer<Resource<T>, ResourceStatus> =
+        ObservableResourceTransformer()
 
-    fun <T> fromSingle(succeedOnData: Boolean = true): SingleTransformer<Resource<T>, ResourceStatus> =
-        SingleResourceTransformer(succeedOnData)
+    fun <T> fromSingle(): SingleTransformer<Resource<T>, ResourceStatus> =
+        SingleResourceTransformer()
 
-    fun <T> fromFlowable(succeedOnData: Boolean = true): FlowableTransformer<Resource<T>, ResourceStatus> =
-        FlowableResourceTransformer(succeedOnData)
+    fun <T> fromFlowable(): FlowableTransformer<Resource<T>, ResourceStatus> =
+        FlowableResourceTransformer()
 
-    private class FlowableResourceTransformer<T>(val succeedOnData: Boolean) : FlowableTransformer<Resource<T>, ResourceStatus> {
+    private class FlowableResourceTransformer<T> : FlowableTransformer<Resource<T>, ResourceStatus> {
         override fun apply(upstream: Flowable<Resource<T>>): Publisher<ResourceStatus> =
-            upstream.map { it.toResourceStatus(succeedOnData) }
+            upstream.map { it.toResourceStatus() }
     }
 
-    private class ObservableResourceTransformer<T>(val succeedOnData: Boolean) : ObservableTransformer<Resource<T>, ResourceStatus> {
+    private class ObservableResourceTransformer<T> : ObservableTransformer<Resource<T>, ResourceStatus> {
         override fun apply(upstream: Observable<Resource<T>>): ObservableSource<ResourceStatus> =
-            upstream.map { it.toResourceStatus(succeedOnData) }
+            upstream.map { it.toResourceStatus() }
     }
 
-    private class SingleResourceTransformer<T>(val succeedOnData: Boolean) : SingleTransformer<Resource<T>, ResourceStatus> {
+    private class SingleResourceTransformer<T> : SingleTransformer<Resource<T>, ResourceStatus> {
         override fun apply(upstream: Single<Resource<T>>): SingleSource<ResourceStatus> =
-            upstream.map { it.toResourceStatus(succeedOnData) }
+            upstream.map { it.toResourceStatus() }
     }
 }
 
-fun <T> Resource<T>.toResourceStatus(succeedOnData: Boolean = true) =
-    (if (succeedOnData) data else null)
+fun <T> Resource<T>.toResourceStatus() =
+    data
         ?.let { ResourceStatus.Success }
         ?: when (this) {
             is Resource.Failed -> ResourceStatus.Error(msg, cause)
