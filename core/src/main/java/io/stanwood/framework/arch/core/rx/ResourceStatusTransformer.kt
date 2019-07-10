@@ -44,25 +44,27 @@ object ResourceStatusTransformer {
     fun <T> fromFlowable(): FlowableTransformer<Resource<T>, ResourceStatus> =
         FlowableResourceTransformer()
 
-    private fun <T> toStatus(source: Resource<T>): ResourceStatus =
-        source.data?.let { ResourceStatus.Success } ?: when (source) {
-            is Resource.Failed -> ResourceStatus.Error(source.msg, source.cause)
-            is Resource.Loading -> ResourceStatus.Loading
-            else -> ResourceStatus.Success
-        }
-
     private class FlowableResourceTransformer<T> : FlowableTransformer<Resource<T>, ResourceStatus> {
         override fun apply(upstream: Flowable<Resource<T>>): Publisher<ResourceStatus> =
-            upstream.map { toStatus(it) }
+            upstream.map { it.toResourceStatus() }
     }
 
     private class ObservableResourceTransformer<T> : ObservableTransformer<Resource<T>, ResourceStatus> {
         override fun apply(upstream: Observable<Resource<T>>): ObservableSource<ResourceStatus> =
-            upstream.map { toStatus(it) }
+            upstream.map { it.toResourceStatus() }
     }
 
     private class SingleResourceTransformer<T> : SingleTransformer<Resource<T>, ResourceStatus> {
         override fun apply(upstream: Single<Resource<T>>): SingleSource<ResourceStatus> =
-            upstream.map { toStatus(it) }
+            upstream.map { it.toResourceStatus() }
     }
 }
+
+fun <T> Resource<T>.toResourceStatus() =
+    data
+        ?.let { ResourceStatus.Success }
+        ?: when (this) {
+            is Resource.Failed -> ResourceStatus.Error(msg, cause)
+            is Resource.Loading -> ResourceStatus.Loading
+            else -> ResourceStatus.Success
+        }
