@@ -32,11 +32,11 @@ class UserRepository @Inject constructor(private val appDatabase: AppDatabase) {
         .getUser()
         .map { it.mapToUser() }
         .onErrorReturn { User(-1) }
-        .subscribeOn(Schedulers.io())!!
+        .subscribeOn(Schedulers.io())
 
     fun updateUser(user: User) =
         Completable.fromCallable {
             appDatabase.userDao().insertUser(user.mapToLocalUser())
         }
-            .subscribeOn(Schedulers.io())!!
+            .subscribeOn(Schedulers.io())
 }

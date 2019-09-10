@@ -30,9 +30,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
 import io.stanwood.mhwdb.R
@@ -40,7 +41,7 @@ import io.stanwood.mhwdb.databinding.FragmentWeaponsBinding
 import io.stanwood.mhwdb.feature.weapons.vm.WeaponsViewModel
 import javax.inject.Inject
 
-class WeaponsFragment : Fragment(), HasSupportFragmentInjector {
+class WeaponsFragment : Fragment(), HasAndroidInjector {
     companion object {
         private const val KEY_WEAPON_TYPE_ID = "weapontype"
         fun createInstance(weaponTypeId: String) =
@@ -55,12 +56,12 @@ class WeaponsFragment : Fragment(), HasSupportFragmentInjector {
     internal lateinit var viewModelFactory: ViewModelFactory<WeaponsViewModel>
     private lateinit var viewModel: WeaponsViewModel
     @Inject
-    internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
+    internal lateinit var androidInjector: DispatchingAndroidInjector<Any>
     @Inject
     internal lateinit var dataBindingComponent: DataBindingComponent
     private var binding: FragmentWeaponsBinding? = null
     private var rcvAdapter: WeaponsAdapter? = null
-    override fun supportFragmentInjector() = androidInjector
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)

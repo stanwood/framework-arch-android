@@ -29,9 +29,11 @@ import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
+
 import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
 import io.stanwood.framework.arch.nav.addNavigateUp
@@ -40,19 +42,19 @@ import io.stanwood.mhwdb.databinding.FragmentArmorDetailsBinding
 import io.stanwood.mhwdb.feature.armors.vm.ArmorDetailsViewModel
 import javax.inject.Inject
 
-class ArmorDetailsFragment : Fragment(), HasSupportFragmentInjector {
+class ArmorDetailsFragment : Fragment(), HasAndroidInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<ArmorDetailsViewModel>
     private lateinit var viewModel: ArmorDetailsViewModel
     @Inject
-    internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
+    internal lateinit var androidInjector: DispatchingAndroidInjector<Any>
     @Inject
     internal lateinit var dataBindingComponent: DataBindingComponent
     private var binding: FragmentArmorDetailsBinding? = null
     private var rcvAdapter: ArmorDetailsAdapter? = null
 
-    override fun supportFragmentInjector() = androidInjector
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)

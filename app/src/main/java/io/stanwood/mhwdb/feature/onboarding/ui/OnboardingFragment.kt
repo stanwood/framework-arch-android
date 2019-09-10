@@ -29,9 +29,10 @@ import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
 import io.stanwood.framework.ui.extensions.setApplyWindowInsetsToChild
@@ -40,18 +41,18 @@ import io.stanwood.mhwdb.databinding.FragmentOnboardingBinding
 import io.stanwood.mhwdb.feature.onboarding.vm.OnboardingViewModel
 import javax.inject.Inject
 
-class OnboardingFragment : Fragment(), HasSupportFragmentInjector {
+class OnboardingFragment : Fragment(), HasAndroidInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<OnboardingViewModel>
     private lateinit var viewModel: OnboardingViewModel
     @Inject
-    internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
+    internal lateinit var androidInjector: DispatchingAndroidInjector<Any>
     @Inject
     internal lateinit var dataBindingComponent: DataBindingComponent
     private var binding: FragmentOnboardingBinding? = null
 
-    override fun supportFragmentInjector() = androidInjector
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
