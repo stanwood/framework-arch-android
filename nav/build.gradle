@@ -50,8 +50,8 @@ android {
 }
 
 dependencies {
-    api "androidx.navigation:navigation-fragment-ktx:2.0.0"
-    api "androidx.navigation:navigation-ui-ktx:2.0.0"
+    api "androidx.navigation:navigation-fragment-ktx:2.1.0"
+    api "androidx.navigation:navigation-ui-ktx:2.1.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

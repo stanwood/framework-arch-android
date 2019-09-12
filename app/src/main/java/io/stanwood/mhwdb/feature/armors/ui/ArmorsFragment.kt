@@ -33,8 +33,8 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
 import io.stanwood.mhwdb.R
@@ -42,13 +42,13 @@ import io.stanwood.mhwdb.databinding.FragmentArmorBinding
 import io.stanwood.mhwdb.feature.armors.vm.ArmorsViewModel
 import javax.inject.Inject
 
-class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
+class ArmorsFragment : Fragment(), HasAndroidInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<ArmorsViewModel>
     private lateinit var viewModel: ArmorsViewModel
     @Inject
-    internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
+    internal lateinit var androidInjector: DispatchingAndroidInjector<Any>
     @Inject
     internal lateinit var dataBindingComponent: DataBindingComponent
     @Inject
@@ -56,7 +56,7 @@ class ArmorsFragment : Fragment(), HasSupportFragmentInjector {
     private var binding: FragmentArmorBinding? = null
     private var rcvAdapter: ArmorsAdapter? = null
 
-    override fun supportFragmentInjector() = androidInjector
+    override fun androidInjector() = androidInjector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
