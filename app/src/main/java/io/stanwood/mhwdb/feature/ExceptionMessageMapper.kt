@@ -22,7 +22,7 @@
 package io.stanwood.mhwdb.feature
 
 import android.content.Context
-import io.stanwood.framework.network.util.NoConnectivityException
+import io.stanwood.framework.network.core.util.NoConnectivityException
 import io.stanwood.mhwdb.R
 import retrofit2.HttpException
 import java.net.SocketTimeoutException

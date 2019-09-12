@@ -21,6 +21,8 @@
 
 package io.stanwood.framework.arch.core.rx
 
+import io.reactivex.Flowable
+import io.reactivex.FlowableTransformer
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
@@ -28,11 +30,16 @@ import io.reactivex.Single
 import io.reactivex.SingleSource
 import io.reactivex.SingleTransformer
 import io.stanwood.framework.arch.core.Resource
+import org.reactivestreams.Publisher
 import timber.log.Timber
 
 object ResourceTransformer {
 
     private val defaultErrorTransformer: ((Throwable) -> String) = { it.message ?: "unknown error" }
+    fun <T> fromFlowable(
+        transform: ((Throwable) -> String) = defaultErrorTransformer
+    ): FlowableTransformer<T, Resource<T>> = FlowableResourceTransformer(transform)
+
     fun <T> fromObservable(
         transform: ((Throwable) -> String) = defaultErrorTransformer
     ): ObservableTransformer<T, Resource<T>> = ObservableResourceTransformer(transform)
@@ -63,6 +70,15 @@ object ResourceTransformer {
         private inline val exceptionMap: ((Throwable)) -> String
     ) : SingleTransformer<T, Resource<T>> {
         override fun apply(upstream: Single<T>): SingleSource<Resource<T>> =
+            upstream
+                .map { createSuccess(it) }
+                .onErrorReturn { createFailed(it, exceptionMap) }
+    }
+
+    private class FlowableResourceTransformer<T>(
+        private inline val exceptionMap: ((Throwable)) -> String
+    ) : FlowableTransformer<T, Resource<T>> {
+        override fun apply(upstream: Flowable<T>): Publisher<Resource<T>> =
             upstream
                 .map { createSuccess(it) }
                 .onErrorReturn { createFailed(it, exceptionMap) }

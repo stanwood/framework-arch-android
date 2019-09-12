@@ -7,17 +7,18 @@ import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
 import io.reactivex.Single
-import io.stanwood.framework.network.store.SerializationParserFactory
+import io.stanwood.framework.network.core.store.SerializationParserFactory
 import io.stanwood.mhwdb.datasource.net.mhw.MhwApi
 import io.stanwood.mhwdb.datasource.net.mhw.MhwArmor
 import io.stanwood.mhwdb.datasource.net.mhw.MhwWeapon
+import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.list
 import okio.BufferedSource
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Suppress("UnstableApiUsage")
+@UnstableDefault
 @Singleton
 class MhwRepository @Inject constructor(private val api: MhwApi, fileSystem: FileSystem) {
     companion object {

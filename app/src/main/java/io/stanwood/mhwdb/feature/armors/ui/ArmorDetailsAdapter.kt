@@ -3,11 +3,12 @@ package io.stanwood.mhwdb.feature.armors.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import io.stanwood.framework.databinding.recyclerview.BindingViewHolder
 import io.stanwood.mhwdb.BR
-import io.stanwood.mhwdb.databinding.LayoutArmorDetailsItemBinding
+import io.stanwood.mhwdb.R
 import io.stanwood.mhwdb.feature.armors.vm.ArmorDetailsItemViewModel
 
 class ArmorDetailsAdapter(
@@ -31,12 +32,7 @@ class ArmorDetailsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         BindingViewHolder(
-            LayoutArmorDetailsItemBinding.inflate(
-                inflater,
-                parent,
-                false,
-                dataBindingComponent
-            )
+            DataBindingUtil.inflate(inflater, R.layout.layout_armor_details_item, parent, false, dataBindingComponent)
         )
 
     override fun onBindViewHolder(holder: BindingViewHolder, position: Int) {
