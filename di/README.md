@@ -204,6 +204,21 @@ abstract class BroadcastReceiverBuilderModule {
 }
 ```
 
+Then inject in your BroadcastReceiver using `AndroidInjection.inject(this, context)`, just as you would in a Fragment or an Activity:
+
+```kotlin
+class UploadStateReceiver : BroadcastReceiver() {
+    
+    @Inject
+    lateinit var uploadInteractor: UploadInteractor
+    
+    override fun onReceive(context: Context, intent: Intent) {
+        AndroidInjection.inject(this, context)
+        // use all the injected things
+    }
+}
+```
+
 ### Initialise in your Application class
 
 ```kotlin

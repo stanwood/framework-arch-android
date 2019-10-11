@@ -3,12 +3,11 @@ package io.stanwood.mhwdb.feature.main.ui
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
@@ -16,14 +15,13 @@ import io.stanwood.mhwdb.R
 import io.stanwood.mhwdb.feature.main.dataprovider.MainDataProvider
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
-
+class MainActivity : AppCompatActivity(), HasAndroidInjector {
     @Inject
-    lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
     @Inject
     lateinit var dataProvider: MainDataProvider
     private var disposable: Disposable? = null
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = androidInjector
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         setTheme(R.style.AppTheme)

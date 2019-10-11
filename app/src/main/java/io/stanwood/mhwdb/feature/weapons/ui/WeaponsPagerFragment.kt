@@ -5,26 +5,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import io.stanwood.framework.arch.core.rx.subscribeBy
 import io.stanwood.framework.arch.di.factory.ViewModelFactory
 import io.stanwood.mhwdb.databinding.FragmentWeaponsPagerBinding
 import io.stanwood.mhwdb.feature.weapons.vm.WeaponsPagerViewModel
 import javax.inject.Inject
 
-class WeaponsPagerFragment : Fragment(), HasSupportFragmentInjector {
+class WeaponsPagerFragment : Fragment(), HasAndroidInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelFactory<WeaponsPagerViewModel>
     private lateinit var viewModel: WeaponsPagerViewModel
     @Inject
-    internal lateinit var androidInjector: DispatchingAndroidInjector<Fragment>
+    internal lateinit var androidInjector: DispatchingAndroidInjector<Any>
 
     private var binding: FragmentWeaponsPagerBinding? = null
 
-    override fun supportFragmentInjector() = androidInjector
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
     private var pagerAdapter: WeaponsPagerAdapter? = null
 
