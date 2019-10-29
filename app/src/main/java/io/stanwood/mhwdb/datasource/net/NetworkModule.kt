@@ -45,7 +45,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     internal fun provideHttpClient(context: Application) =
         OkHttpClient.Builder().apply {
             addInterceptor(ConnectivityInterceptor(context))
@@ -63,7 +62,6 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    @JvmStatic
     internal fun provideRetrofit(httpClient: OkHttpClient) =
         Retrofit.Builder().client(httpClient).baseUrl("https://mhw-db.com/")
             .addConverterFactory(BufferedSourceConverterFactory.create())
@@ -72,12 +70,10 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    @JvmStatic
     internal fun provideMhwApi(retrofit: Retrofit) = retrofit.create(MhwApi::class.java)
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideFileSystem(context: Application): FileSystem =
         FileSystemFactory.create(File(context.noBackupFilesDir, "store"))
 }

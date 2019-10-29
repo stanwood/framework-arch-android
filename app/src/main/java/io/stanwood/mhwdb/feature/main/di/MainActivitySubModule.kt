@@ -15,13 +15,11 @@ import io.stanwood.mhwdb.feature.main.ui.MainActivity
 object MainActivitySubModule {
 
     @Provides
-    @JvmStatic
     internal fun provideMainNavController(activity: MainActivity) =
         activity.findNavController(R.id.nav_host_fragment)
 
     @Provides
     @ActivityScope
-    @JvmStatic
     internal fun provideMainLoader(
         activity: MainActivity,
         viewModelFactory: ViewDataProviderFactory<MainDataProviderImpl>

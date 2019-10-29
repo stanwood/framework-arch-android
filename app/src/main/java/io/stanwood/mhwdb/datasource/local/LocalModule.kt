@@ -32,7 +32,6 @@ object LocalModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideDatabase(context: Application) =
         Room.databaseBuilder(context, AppDatabase::class.java, "mhwdb").build()
 }

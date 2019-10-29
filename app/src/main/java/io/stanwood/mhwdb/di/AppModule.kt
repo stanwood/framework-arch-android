@@ -10,6 +10,5 @@ import javax.inject.Singleton
 object AppModule {
     @Singleton
     @Provides
-    @JvmStatic
     internal fun provideExceptionMapper(context: Application) = ExceptionMessageMapper(context)
 }

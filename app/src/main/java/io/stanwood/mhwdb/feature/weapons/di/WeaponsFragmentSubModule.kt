@@ -15,17 +15,14 @@ import io.stanwood.mhwdb.glide.ImageViewBindingAdapters
 @Module
 object WeaponsFragmentSubModule {
     @Provides
-    @JvmStatic
     internal fun provideGlideAppFragmentFactory(fragment: WeaponsFragment): GlideAppFactory =
         GlideAppFragmentFactory(fragment)
 
     @Provides
-    @JvmStatic
     internal fun provideImageViewBindingAdapters(glideAppFactory: GlideAppFactory): ImageViewBindingAdapters =
         ImageViewBindingAdapters(glideAppFactory)
 
     @Provides
-    @JvmStatic
     internal fun provideGlideDataBindingComponent(imageViewBindingAdapters: ImageViewBindingAdapters): DataBindingComponent =
         object : DataBindingComponent {
             override fun getImageViewBindingAdapters(): ImageViewBindingAdapters =
@@ -33,7 +30,6 @@ object WeaponsFragmentSubModule {
         }
 
     @Provides
-    @JvmStatic
     internal fun provideWeaponsDataProvider(
         fragment: WeaponsFragment,
         dataProviderFactory: ViewDataProviderFactory<WeaponsDataProviderImpl>
