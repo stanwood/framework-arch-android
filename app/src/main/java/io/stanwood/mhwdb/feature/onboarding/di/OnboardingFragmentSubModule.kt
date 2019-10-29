@@ -11,17 +11,14 @@ import io.stanwood.mhwdb.glide.ImageViewBindingAdapters
 @Module
 object OnboardingFragmentSubModule {
     @Provides
-    @JvmStatic
     internal fun provideGlideAppFragmentFactory(fragment: OnboardingFragment): GlideAppFactory =
         GlideAppFragmentFactory(fragment)
 
     @Provides
-    @JvmStatic
     internal fun provideImageViewBindingAdapters(glideAppFactory: GlideAppFactory): ImageViewBindingAdapters =
         ImageViewBindingAdapters(glideAppFactory)
 
     @Provides
-    @JvmStatic
     internal fun provideGlideDataBindingComponent(imageViewBindingAdapters: ImageViewBindingAdapters): DataBindingComponent =
         object : DataBindingComponent {
             override fun getImageViewBindingAdapters(): ImageViewBindingAdapters =

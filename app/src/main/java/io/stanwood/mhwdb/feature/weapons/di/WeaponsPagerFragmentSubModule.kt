@@ -12,7 +12,6 @@ import io.stanwood.mhwdb.feature.weapons.ui.WeaponsPagerFragment
 object WeaponsPagerFragmentSubModule {
 
     @Provides
-    @JvmStatic
     internal fun provideWeaponsPagerDataProvider(
         fragment: WeaponsPagerFragment,
         dataProviderFactory: ViewDataProviderFactory<WeaponsPagerDataProviderImpl>
